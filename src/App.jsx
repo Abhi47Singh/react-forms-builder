@@ -160,9 +160,15 @@ export default function App() {
 
   // Update/add/remove handlers using setFields
   const updateField = (id, updates) => {
-    setFields((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, ...updates } : f))
-    );
+    // If only the 'value' property is being updated, skip undo/redo history
+    if (Object.keys(updates).length === 1 && updates.value !== undefined) {
+      setFields(
+        (prev) => prev.map((f) => (f.id === id ? { ...f, ...updates } : f)),
+        { skipHistory: true }
+      );
+    } else {
+      setFields((prev) => prev.map((f) => (f.id === id ? { ...f, ...updates } : f)));
+    }
   };
   const removeField = (id) => {
     setFields((prev) => prev.filter((f) => f.id !== id));

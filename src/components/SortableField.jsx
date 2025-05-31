@@ -133,7 +133,7 @@ export default function SortableField({ field, updateField, removeField, onEdit,
       ) : (
         <>
           {/* Label editing and drag handle for all other fields */}
-          <div className="mb-2 flex justify-around">
+          <div className="mb-2 flex justify-around group relative">
             <span
               {...listeners}
               {...attributes}
@@ -173,6 +173,15 @@ export default function SortableField({ field, updateField, removeField, onEdit,
                   type="button"
                 >
                   <FaPen />
+                </button>
+                {/* Delete button: only visible on hover */}
+                <button
+                  onClick={() => removeField(field.id)}
+                  className="absolute right-0 top-0 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                  type="button"
+                  title="Delete"
+                >
+                  <FaTrash />
                 </button>
               </>
             )}

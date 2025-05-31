@@ -5,13 +5,16 @@ export default function useUndoRedo(initialState, limit = 10) {
   const undoStack = useRef([]);
   const redoStack = useRef([]);
 
-  const set = (newState) => {
-    // Only push if state actually changes
-    if (newState !== state) {
+  // Accepts options: { skipHistory: true } to avoid pushing to undo stack
+  const set = (newState, options = {}) => {
+    // Only push if state actually changes and not skipping history
+    if (!options.skipHistory && newState !== state) {
       undoStack.current.push(state);
       if (undoStack.current.length > limit) undoStack.current.shift();
       setState(newState);
       redoStack.current = [];
+    } else if (options.skipHistory && newState !== state) {
+      setState(newState);
     }
   };
 
