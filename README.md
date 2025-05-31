@@ -90,4 +90,3 @@ Made with ❤️ by [Abhi47Singh](https://github.com/Abhi47Singh)
 
 ## 📄 License
 
-This project is licensed under the MIT License.
