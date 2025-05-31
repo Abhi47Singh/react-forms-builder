@@ -33,7 +33,7 @@ Build beautiful, custom forms with an intuitive drag-and-drop interface. Instant
 
 | Light Mode | Dark Mode | Mobile Preview |
 |:----------:|:---------:|:--------------:|
-| ![Light]([https://user-images.githubusercontent.com/placeholder/light.png](https://drive.google.com/file/d/1CDgpdi08X06JeNfBSLRZkd2lQUSoAikg/view?usp=sharing)) | ![Dark]([https://user-images.githubusercontent.com/placeholder/dark.png](https://drive.google.com/file/d/1_k_Ur0XwqksooDxK_sXMJDIQq7LWf40y/view?usp=sharing)) | ![Mobile](https://drive.google.com/file/d/1q8a9RpZLlMnS8ZkOyYCiU5eNpJyB3I0N/view?usp=sharing) |
+| ![Light](https://github.com/Abhi47Singh/react-forms-builder/blob/main/public/lightTheme.png) | ![Dark](https://github.com/Abhi47Singh/react-forms-builder/blob/main/public/darkTheme.png) | ![Mobile](https://github.com/Abhi47Singh/react-forms-builder/blob/main/public/MobileView.png) |
 
 ---
 
