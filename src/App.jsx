@@ -7,6 +7,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -14,6 +15,8 @@ import Sidebar from "./components/Sidebar";
 import FormBuilder from "./components/FormBuilder";
 import PreviewModal from "./components/PreviewModal";
 import useUndoRedo from "./hooks/useUndoRedo";
+import SortableField from "./components/SortableField"; // or your field preview component
+import { typeIcons } from "./components/icons"; // for icon previews
 
 const COMPONENTS = [
   { type: "name", label: "Name" },
@@ -52,6 +55,7 @@ export default function App() {
 
   // NEW: flag to know if a true drag started from sidebar
   const [isSidebarDragging, setIsSidebarDragging] = useState(false);
+  const [draggedSidebarType, setDraggedSidebarType] = useState(null);
 
   // Persist theme
   useEffect(() => {
@@ -99,14 +103,15 @@ export default function App() {
 
   // Called when any drag starts
   const handleDragStart = ({ active }) => {
-    // Only mark it if coming from the sidebar
     if (active.data?.current?.fromSidebar) {
       setIsSidebarDragging(true);
+      setDraggedSidebarType(active.id.replace("sidebar-", "")); // Track type for overlay
     }
   };
 
   // Called when drag finishes (either drop or cancel)
   const handleDragEnd = ({ active, over }) => {
+    setDraggedSidebarType(null); // Clear overlay
     if (
       isSidebarDragging &&
       active.data?.current?.fromSidebar
@@ -142,6 +147,7 @@ export default function App() {
 
   const handleDragCancel = () => {
     setIsSidebarDragging(false);
+    setDraggedSidebarType(null); // Clear overlay
   };
 
   // Helper to add one or two fields (for name @50%)
@@ -244,6 +250,19 @@ export default function App() {
             clearAll={handleClearAll}
           />
         </div>
+        {/* Drag preview overlay */}
+        <DragOverlay>
+          {draggedSidebarType ? (
+            <div className="p-4 rounded border bg-white dark:bg-gray-800 shadow-lg flex items-center gap-2 min-w-[120px]">
+              {typeIcons[draggedSidebarType] && (
+                <span className="text-xl">{React.createElement(typeIcons[draggedSidebarType])}</span>
+              )}
+              <span className="capitalize font-semibold">
+                {COMPONENTS.find(c => c.type === draggedSidebarType)?.label || draggedSidebarType}
+              </span>
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );
