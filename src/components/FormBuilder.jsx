@@ -19,10 +19,9 @@ export default function FormBuilder({
   redoAction,
   clearAll,
 }) {
-  const { setNodeRef, isOver } = useDroppable({ id: "form-dropzone" });
+  const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
 
-  // Auto-scroll to bottom when fields change
   useEffect(() => {
     if (dropzoneRef.current) {
       dropzoneRef.current.scrollTop = dropzoneRef.current.scrollHeight;
@@ -30,7 +29,7 @@ export default function FormBuilder({
   }, [fields.length]);
 
   const handleEdit = (field) => {
-    setConfig({ ...field }); // Open config with current field data
+    setConfig({ ...field });
   };
 
   const handleShare = () => {
@@ -70,14 +69,12 @@ export default function FormBuilder({
     <div className="flex-1 relative flex flex-col mt-6">
       {/* Clear All, Undo, Redo Buttons */}
       <div className="flex justify-center gap-4 -mt-4">
-        {/* Undo */}
         <button
           onClick={undoAction}
           className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
         >
           <FaUndoAlt className="text-lg" />
         </button>
-        {/* Clear All */}
         <button
           onClick={clearAll}
           className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-red-500 hover:!text-white transition-colors"
@@ -85,7 +82,6 @@ export default function FormBuilder({
           <FaBroom className="text-lg" />
           Clear All
         </button>
-        {/* Redo */}
         <button
           onClick={redoAction}
           className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
@@ -109,15 +105,7 @@ export default function FormBuilder({
           strategy={verticalListSortingStrategy}
         >
           <div className="flex flex-col gap-4">
-            {fields.length === 0 ? (
-              <div className="w-full flex items-center justify-center h-60">
-                <span className="text-gray-400 text-lg text-center">
-                  Drag or tap to add field
-                </span>
-              </div>
-            ) : (
-              rows
-            )}
+            {rows}
           </div>
         </SortableContext>
       </div>

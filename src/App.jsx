@@ -97,7 +97,7 @@ export default function App() {
   // Use delay so that quick clicks never start a drag
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { delay: 150, tolerance: 0 },
+      activationConstraint: { distance: 10 }, // Only drag after moving 10px
     })
   );
 

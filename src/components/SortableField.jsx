@@ -118,7 +118,6 @@ export default function SortableField({ field, updateField, removeField, onEdit,
               borderTopStyle: field.style || "solid",
               borderTopColor: "currentColor",
               fontWeight: field.bold ? "bold" : "normal",
-              // Remove marginTop and marginBottom
               width: "100%",
             }}
             className="border-gray-400 dark:border-gray-600"
@@ -137,7 +136,7 @@ export default function SortableField({ field, updateField, removeField, onEdit,
             <span
               {...listeners}
               {...attributes}
-              className="cursor-move mr-2 text-gray-400 hover:text-gray-600 select-none"
+              className="cursor-grab active:cursor-grabbing mr-2 text-gray-400 hover:text-gray-600 select-none"
               title="Drag to reorder"
               tabIndex={-1}
               style={{ fontSize: 20, display: "flex", alignItems: "center" }}

@@ -335,6 +335,9 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
   );
   const [errors, setErrors] = useState({});
 
+  // Add refs for each field
+  const fieldRefs = React.useRef({});
+
   const handleFieldChange = (id, value) => {
     setFormValues(prev => ({
       ...prev,
@@ -353,23 +356,32 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
       if (field.required && !formValues[field.id]) {
         newErrors[field.id] = "This field is required";
       }
-      // For file fields, check for file presence
       if (field.type === "file" && field.required && !formValues[field.id]) {
         newErrors[field.id] = "File is required";
       }
-      // For multi fields (checkboxes), check for empty array
       if (field.multi && field.required && Array.isArray(formValues[field.id]) && formValues[field.id].length === 0) {
         newErrors[field.id] = "This field is required";
       }
     });
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validate()) {
-      // Optionally, scroll to first error
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      // Scroll to the first field with error
+      const firstErrorId = Object.keys(newErrors)[0];
+      const ref = fieldRefs.current[firstErrorId];
+      if (ref && ref.scrollIntoView) {
+        ref.scrollIntoView({ behavior: "smooth", block: "center" });
+        // Optionally, focus the input if possible
+        if (ref.querySelector && ref.querySelector("input,select,textarea")) {
+          const input = ref.querySelector("input,select,textarea");
+          input && input.focus();
+        }
+      }
       return;
     }
     setSubmitted(true);
@@ -448,14 +460,18 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
             }}
           >
             {fields.map((field) => (
-              <PreviewField
+              <div
                 key={field.id}
-                field={field}
-                value={formValues[field.id]}
-                setValue={submitted ? undefined : (val) => handleFieldChange(field.id, val)}
-                readonly={submitted}
-                error={errors[field.id]}
-              />
+                ref={el => (fieldRefs.current[field.id] = el)}
+              >
+                <PreviewField
+                  field={field}
+                  value={formValues[field.id]}
+                  setValue={submitted ? undefined : (val) => handleFieldChange(field.id, val)}
+                  readonly={submitted}
+                  error={errors[field.id]}
+                />
+              </div>
             ))}
           </div>
         </form>

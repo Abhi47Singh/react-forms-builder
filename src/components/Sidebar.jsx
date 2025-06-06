@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import { FaPlus, FaMinus, FaTimes, FaAsterisk, FaFileAlt } from "react-icons/fa";
 import SidebarDraggable from "./SidebarDraggable";
 
-// Example templates
 const TEMPLATES = [
   {
     name: "Contact Form",
@@ -35,7 +34,6 @@ const TEMPLATES = [
 ];
 
 export default function Sidebar({
-  onAdd,
   COMPONENTS,
   setPreview,
   config,
@@ -68,11 +66,6 @@ export default function Sidebar({
   const handleSave = () => {
     if (config.id) {
       updateField(config.id, config);
-    } else {
-      onAdd({
-        ...config,
-        placeholder: config.placeholder || config.label,
-      });
     }
     setConfig(null);
   };
@@ -112,8 +105,6 @@ export default function Sidebar({
                       comp.label
                     )
                   }
-                  icon={comp.icon}
-                  onClick={() => startConfig(comp.type)}
                 />
               ))}
             </div>
