@@ -56,6 +56,7 @@ export default function App() {
   // NEW: flag to know if a true drag started from sidebar
   const [isSidebarDragging, setIsSidebarDragging] = useState(false);
   const [draggedSidebarType, setDraggedSidebarType] = useState(null);
+  const [overId, setOverId] = useState(null);
 
   // Persist theme
   useEffect(() => {
@@ -111,17 +112,22 @@ export default function App() {
 
   // Called when drag finishes (either drop or cancel)
   const handleDragEnd = ({ active, over }) => {
-    setDraggedSidebarType(null); // Clear overlay
-    if (
-      isSidebarDragging &&
-      active.data?.current?.fromSidebar
-    ) {
+    setDraggedSidebarType(null);
+    setOverId(null);
+
+    if (isSidebarDragging && active.data?.current?.fromSidebar) {
       const comp = COMPONENTS.find(
         (c) => c.type === active.id.replace("sidebar-", "")
       );
       if (comp) {
-        addField({
+        let insertAt = fields.length;
+        if (over && over.id) {
+          const idx = fields.findIndex((f) => f.id === over.id);
+          if (idx !== -1) insertAt = idx;
+        }
+        const newField = {
           ...comp,
+          id: `${comp.type}-${Date.now()}`,
           label: comp.label,
           width: 100,
           options:
@@ -129,10 +135,15 @@ export default function App() {
               ? ["Option 1"]
               : undefined,
           value: "",
-        });
+        };
+        setFields((prev) => [
+          ...prev.slice(0, insertAt),
+          newField,
+          ...prev.slice(insertAt),
+        ]);
       }
       setIsSidebarDragging(false);
-      return; // <-- Prevents further drop logic
+      return;
     }
 
     // Now handle reorder if it was an internal move
@@ -226,6 +237,7 @@ export default function App() {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
+        onDragOver={({ over }) => setOverId(over?.id || null)}
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
@@ -248,6 +260,8 @@ export default function App() {
             undoAction={undoAction}
             redoAction={redoAction}
             clearAll={handleClearAll}
+            overId={overId}
+            isSidebarDragging={isSidebarDragging}
           />
         </div>
         {/* Drag preview overlay */}

@@ -1,14 +1,36 @@
 // SidebarDraggable.jsx
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { typeIcons } from "./icons";
+import { IoIosDoneAll } from "react-icons/io";
+import { FaGripLines, FaReadme } from "react-icons/fa6";
+import { RiTextSnippet } from "react-icons/ri";
+import { LuUngroup } from "react-icons/lu";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { BsCalendarDateFill } from "react-icons/bs";
+import { IoLocation, IoPerson } from "react-icons/io5";
+import { MdNumbers, MdEmail } from "react-icons/md";
+
+const typeIconMap = {
+  name: <IoPerson className="text-lg" />,
+  email: <MdEmail className="text-lg" />,
+  phone: <MdNumbers className="text-lg" />,
+  address: <IoLocation className="text-lg" />,
+  date: <BsCalendarDateFill className="text-lg" />,
+  dropdown: <IoIosArrowDropdownCircle className="text-lg" />,
+  radio: <LuUngroup className="text-lg" />,
+  textarea: <FaReadme className="text-lg" />,
+  p: <RiTextSnippet className="text-lg" />,
+  paragraph: <RiTextSnippet className="text-lg" />,
+  hr: <FaGripLines className="text-lg" />,
+  // file: <FaReadme className="text-lg" />, // You can change this if you want a different icon for file upload
+  submit: <IoIosDoneAll className="text-3xl" />,
+};
 
 export default function SidebarDraggable({ type, label }) {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: `sidebar-${type}`,
     data: { fromSidebar: true },
   });
-  const Icon = typeIcons[type];
 
   return (
     <div
@@ -21,7 +43,7 @@ export default function SidebarDraggable({ type, label }) {
       style={{ minHeight: 60 }}
     >
       <span className="flex items-center gap-2 justify-center w-full">
-        {Icon && <Icon className="inline-block text-lg" />}
+        {typeIconMap[type]}
         {label}
       </span>
     </div>

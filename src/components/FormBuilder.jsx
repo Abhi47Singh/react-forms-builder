@@ -18,6 +18,8 @@ export default function FormBuilder({
   undoAction,
   redoAction,
   clearAll,
+  overId,
+  isSidebarDragging,
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
@@ -52,6 +54,17 @@ export default function FormBuilder({
       );
       i += 2;
     } else {
+      // Insert placeholder if dragging from sidebar and over this field
+      if (isSidebarDragging && overId === fields[i].id) {
+        rows.push(
+          <div
+            key="placeholder"
+            className="h-16 bg-blue-200 dark:bg-blue-900 border-2 border-blue-400 rounded flex items-center justify-center mb-2 animate-pulse"
+          >
+            Drop here
+          </div>
+        );
+      }
       rows.push(
         <SortableField
           key={fields[i].id}
@@ -63,6 +76,17 @@ export default function FormBuilder({
       );
       i += 1;
     }
+  }
+  // If overId is null and dragging from sidebar, show placeholder at end
+  if (isSidebarDragging && overId === null) {
+    rows.push(
+      <div
+        key="placeholder-end"
+        className="h-16 bg-blue-200 dark:bg-blue-900 border-2 border-blue-400 rounded flex items-center justify-center mb-2 animate-pulse"
+      >
+        Drop here
+      </div>
+    );
   }
 
   return (
