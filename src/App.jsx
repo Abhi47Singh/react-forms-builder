@@ -177,7 +177,6 @@ export default function App() {
 
   // Update/add/remove handlers using setFields
   const updateField = (id, updates) => {
-    // If only the 'value' property is being updated, skip undo/redo history
     if (Object.keys(updates).length === 1 && updates.value !== undefined) {
       setFields(
         (prev) => prev.map((f) => (f.id === id ? { ...f, ...updates } : f)),
@@ -187,15 +186,20 @@ export default function App() {
       setFields((prev) => prev.map((f) => (f.id === id ? { ...f, ...updates } : f)));
     }
   };
+  // CHANGED: Remove field and close config if needed
   const removeField = (id) => {
     setFields((prev) => prev.filter((f) => f.id !== id));
+    if (config && config.id === id) {
+      setConfig(null);
+    }
   };
 
-  // Clear all fields and localStorage
+  // CHANGED: Clear all fields and close config
   const handleClearAll = () => {
     clearAll();
     setFields([]); // Force fields to empty immediately
     localStorage.removeItem("hypergo_builder_fields");
+    setConfig(null);
   };
 
   // Helper to generate unique IDs for template fields

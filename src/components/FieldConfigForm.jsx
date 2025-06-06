@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { FaPlus, FaMinus, FaTimes, FaAsterisk } from "react-icons/fa";
+import { FaPlus, FaMinus, FaAsterisk } from "react-icons/fa";
 
 export default function FieldConfigForm({ config, setConfig, updateField, onCancel }) {
   const labelInputRef = useRef(null);
@@ -66,9 +66,10 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
     <div>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl">Configure {config.type}</h3>
-        <button onClick={onCancel} className="text-black dark:text-white">
+        {/* REMOVE the top-right cancel button */}
+        {/* <button onClick={onCancel} className="text-black dark:text-white">
           <FaTimes />
-        </button>
+        </button> */}
       </div>
 
       {/* Options for dropdown/radio */}
@@ -170,14 +171,18 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
       {config.type === "submit" && (
         <div className="mb-4">
           <label className="block mb-2 font-semibold">Width</label>
-          <select
-            className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
-            value={config.width || 100}
-            onChange={e => setConfig({ ...config, width: Number(e.target.value) })}
-          >
-            <option value={100}>100%</option>
-            <option value={50}>50%</option>
-          </select>
+          <div className="flex gap-2">
+            {[100, 50].map(val => (
+              <button
+                key={val}
+                type="button"
+                className={`px-4 py-2 rounded border ${config.width === val ? "bg-blue-600 text-white border-blue-600" : "bg-white dark:bg-gray-900 text-black dark:text-white border-gray-300 dark:border-gray-700"}`}
+                onClick={() => setConfig({ ...config, width: val })}
+              >
+                {val}%
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -196,13 +201,75 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
         </div>
       )}
 
-      <button
-        onClick={handleSave}
-        className="w-full py-2 bg-green-600 text-white rounded"
-        disabled={!!error}
-      >
-        {config.id ? "Save" : "Add to Form"}
-      </button>
+
+      {/* HR (line) specific settings */}
+      {config.type === "hr" && (
+        <div className="mb-4 space-y-4">
+          {/* Thickness */}
+          <div>
+            <label className="block mb-2 font-semibold">Thickness (px)</label>
+            <div className="flex gap-2">
+              {[1, 3, 5].map(val => (
+                <button
+                  key={val}
+                  type="button"
+                  className={`px-4 py-2 rounded border ${config.thickness === val ? "bg-blue-600 text-white border-blue-600" : "bg-white dark:bg-gray-900 text-black dark:text-white border-gray-300 dark:border-gray-700"}`}
+                  onClick={() => setConfig({ ...config, thickness: val })}
+                >
+                  {val}px
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Bold */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={!!config.bold}
+              onChange={e => setConfig({ ...config, bold: e.target.checked })}
+              id="bold"
+            />
+            <label htmlFor="bold" className="flex items-center gap-1">
+              Bold
+            </label>
+          </div>
+          {/* Style */}
+          <div>
+            <label className="block mb-2 font-semibold">Line Style</label>
+            <select
+              className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
+              value={config.style || "solid"}
+              onChange={e => setConfig({ ...config, style: e.target.value })}
+            >
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="dotted">Dotted</option>
+              <option value="double">Double</option>
+              <option value="groove">Groove</option>
+              <option value="ridge">Ridge</option>
+              <option value="inset">Inset</option>
+              <option value="outset">Outset</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-2 mt-4">
+        <button
+          onClick={handleSave}
+          className="flex-1 py-2 bg-green-600 text-white rounded transition-colors duration-150 hover:bg-green-700"
+          disabled={!!error}
+        >
+          {config.id ? "Save" : "Add to Form"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="flex-1 py-2 bg-red-700 text-white rounded transition-colors duration-150 hover:bg-red-800"
+          type="button"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }

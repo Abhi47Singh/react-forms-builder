@@ -128,8 +128,14 @@ export default function FormBuilder({
           items={fields.map((f) => f.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="flex flex-col gap-4">
-            {rows}
+          <div className="flex flex-col gap-4 h-full">
+            {fields.length === 0 ? (
+              <div className="flex flex-1 items-center justify-center h-full w-full text-gray-400 text-2xl select-none">
+                Drop to add fields
+              </div>
+            ) : (
+              rows
+            )}
           </div>
         </SortableContext>
       </div>
