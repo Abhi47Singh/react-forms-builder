@@ -92,13 +92,41 @@ export default function FormBuilder({
   return (
     <div className="flex-1 relative flex flex-col mt-6">
       {/* Clear All, Undo, Redo Buttons */}
+
+
       <div className="flex justify-center gap-4 -mt-4">
+
+        {/* left part */}
+
+         {/* Preview button */}
+        <button
+          className="text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 flex items-center gap-2 text-black dark:text-white"
+          onClick={() => setPreview(true)}
+        >
+          <FaEye />
+          Preview
+        </button>
+
+        {/* Share Form button */}
+        <button
+          className="text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 flex items-center gap-2 text-black dark:text-white"
+          onClick={handleShare}
+        >
+          <IoShareSocial />
+          Share Form
+        </button>
+      
+
+        {/* right part */}
+        {/*undo button*/}
         <button
           onClick={undoAction}
           className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
         >
           <FaUndoAlt className="text-lg" />
         </button>
+
+        {/* Clear All button */}
         <button
           onClick={clearAll}
           className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-red-500 hover:!text-white transition-colors"
@@ -106,6 +134,8 @@ export default function FormBuilder({
           <FaBroom className="text-lg" />
           Clear All
         </button>
+
+        {/* Redo button */}
         <button
           onClick={redoAction}
           className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
@@ -138,25 +168,6 @@ export default function FormBuilder({
             )}
           </div>
         </SortableContext>
-      </div>
-
-      {/* Preview button at the bottom left */}
-      <div className="absolute flex justify-center items-center gap-4 ml-8 -mt-4">
-        <button
-          className="text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 flex items-center gap-2 text-black dark:text-white"
-          onClick={() => setPreview(true)}
-        >
-          <FaEye />
-          Preview
-        </button>
-
-        <button
-          className="text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 flex items-center gap-2 text-black dark:text-white"
-          onClick={handleShare}
-        >
-          <IoShareSocial />
-          Share Form
-        </button>
       </div>
     </div>
   );
