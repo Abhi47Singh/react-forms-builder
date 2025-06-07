@@ -11,19 +11,19 @@ import { IoLocation, IoPerson } from "react-icons/io5";
 import { MdNumbers, MdEmail } from "react-icons/md";
 
 const typeIconMap = {
-  name: <IoPerson className="text-lg" />,
-  email: <MdEmail className="text-lg" />,
-  phone: <MdNumbers className="text-lg" />,
-  address: <IoLocation className="text-lg" />,
-  date: <BsCalendarDateFill className="text-lg" />,
-  dropdown: <IoIosArrowDropdownCircle className="text-lg" />,
-  radio: <LuUngroup className="text-lg" />,
-  textarea: <FaReadme className="text-lg" />,
-  p: <RiTextSnippet className="text-lg" />,
-  paragraph: <RiTextSnippet className="text-lg" />,
-  hr: <FaGripLines className="text-lg" />,
-  // file: <FaReadme className="text-lg" />, // You can change this if you want a different icon for file upload
-  submit: <IoIosDoneAll className="text-3xl" />,
+  name: <IoPerson className="hidden lg:inline text-lg" />,
+  email: <MdEmail className="hidden lg:inline text-lg" />,
+  phone: <MdNumbers className="hidden lg:inline text-lg" />,
+  address: <IoLocation className="hidden lg:inline text-lg" />,
+  date: <BsCalendarDateFill className="hidden lg:inline text-lg" />,
+  dropdown: <IoIosArrowDropdownCircle className="hidden lg:inline text-lg" />,
+  radio: <LuUngroup className="hidden lg:inline text-lg" />,
+  textarea: <FaReadme className="hidden lg:inline text-lg" />,
+  p: <RiTextSnippet className="hidden lg:inline text-lg" />,
+  paragraph: <RiTextSnippet className="hidden lg:inline text-lg" />,
+  hr: <FaGripLines className="hidden lg:inline text-lg" />,
+  // file: <FaReadme className="hidden lg:inline text-lg" />,
+  submit: <IoIosDoneAll className="hidden lg:inline text-3xl" />,
 };
 
 export default function SidebarDraggable({ type, label }) {

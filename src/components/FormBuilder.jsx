@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -8,6 +8,8 @@ import { FaEye, FaRedoAlt, FaUndoAlt } from "react-icons/fa";
 import { FaBroom } from "react-icons/fa6";
 import SortableField, { SortableFieldGroup } from "./SortableField";
 import { IoShareSocial } from "react-icons/io5";
+import { RiMenu2Fill } from "react-icons/ri";
+import MobileSidebarDrawer from "./MobileSidebarDrawer";
 
 export default function FormBuilder({
   fields,
@@ -20,9 +22,13 @@ export default function FormBuilder({
   clearAll,
   overId,
   isSidebarDragging,
+  COMPONENTS,
+  onUseTemplate,
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [tab, setTab] = useState("components");
 
   useEffect(() => {
     if (dropzoneRef.current) {
@@ -91,56 +97,73 @@ export default function FormBuilder({
 
   return (
     <div className="flex-1 relative flex flex-col mt-6">
-      {/* Clear All, Undo, Redo Buttons */}
+      {/* Mobile menu icon (left corner, only below ms) */}
+      <button
+        className="absolute top-[-10px] left-8 z-40 ms:hidden"
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open sidebar"
+      >
+        <RiMenu2Fill className="text-[28px]" />
+      </button>
 
+      {/* Mobile sidebar drawer */}
+      <MobileSidebarDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        COMPONENTS={COMPONENTS}
+        tab={tab}
+        setTab={setTab}
+        onUseTemplate={onUseTemplate}
+      />
 
+      {/* Action buttons */}
       <div className="flex justify-center gap-4 -mt-4">
-
-        {/* left part */}
-
-         {/* Preview button */}
+        {/* Preview button */}
         <button
-          className="text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 flex items-center gap-2 text-black dark:text-white"
+          className="group lg:text-sm text-xl bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 xs500:flex items-center gap-2 text-black dark:text-white hidden"
           onClick={() => setPreview(true)}
         >
           <FaEye />
-          Preview
+          <span className="hidden lg:inline group-hover:inline">Preview</span>
         </button>
 
         {/* Share Form button */}
         <button
-          className="text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 flex items-center gap-2 text-black dark:text-white"
+          className="group lg:text-sm text-lgs bg-gray-200 dark:bg-gray-700 dark:border-gray-600 rounded shadow px-3 py-2 xs500:flex items-center gap-2 text-black dark:text-white hidden"
           onClick={handleShare}
         >
           <IoShareSocial />
-          Share Form
+          <span className="hidden lg:inline group-hover:inline">Share Form</span>
         </button>
-      
 
-        {/* right part */}
-        {/*undo button*/}
+        {/* Undo button */}
         <button
           onClick={undoAction}
-          className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
+          className="group flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
+          title="Undo"
         >
           <FaUndoAlt className="text-lg" />
+          <span className="hidden lg:inline group-hover:inline">Undo</span>
         </button>
 
         {/* Clear All button */}
         <button
           onClick={clearAll}
-          className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-red-500 hover:!text-white transition-colors"
+          className="group flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-red-500 hover:!text-white transition-colors"
+          title="Clear All"
         >
           <FaBroom className="text-lg" />
-          Clear All
+          <span className="hidden lg:inline group-hover:inline">Clear All</span>
         </button>
 
         {/* Redo button */}
         <button
           onClick={redoAction}
-          className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
+          className="group flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
+          title="Redo"
         >
           <FaRedoAlt className="text-lg" />
+          <span className="hidden lg:inline group-hover:inline">Redo</span>
         </button>
       </div>
 

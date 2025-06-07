@@ -46,7 +46,7 @@ export default function Sidebar({
   const [tab, setTab] = useState("components");
 
   return (
-    <div className="w-1/3 p-4 bg-gray-100 dark:bg-gray-800 text-black dark:text-white overflow-auto relative">
+    <div className="hidden ms:block w-1/3 p-4 bg-gray-100 dark:bg-gray-800 text-black dark:text-white overflow-auto relative">
       {/* Tab Switcher */}
       <div className="flex mb-4">
         <button
@@ -73,7 +73,7 @@ export default function Sidebar({
                   label={
                     comp.type === "file" ? (
                       <span className="flex items-center gap-2">
-                        <FaFileAlt className="text-lg" />
+                        <FaFileAlt className="text-lg hidden lg:inline " />
                         {comp.label}
                       </span>
                     ) : (
