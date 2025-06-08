@@ -1,5 +1,13 @@
 import React, { useState, useRef } from "react";
-import { FaArrowLeft, FaDesktop, FaTabletAlt, FaMobileAlt, FaMoon, FaSun } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaDesktop,
+  FaTabletAlt,
+  FaMobileAlt,
+  FaMoon,
+  FaSun,
+} from "react-icons/fa";
+import { IoArrowBack } from "react-icons/io5";
 import PreviewField from "./PreviewField";
 import { validateFields } from "../utils/validation";
 
@@ -8,18 +16,21 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
   const [submitted, setSubmitted] = useState(false);
   const [formValues, setFormValues] = useState(() =>
     Object.fromEntries(
-      fields.map(field => [field.id, field.defaultValue || (field.multi ? [] : "")])
+      fields.map((field) => [
+        field.id,
+        field.defaultValue || (field.multi ? [] : ""),
+      ])
     )
   );
   const [errors, setErrors] = useState({});
   const fieldRefs = useRef({});
 
   const handleFieldChange = (id, value) => {
-    setFormValues(prev => ({
+    setFormValues((prev) => ({
       ...prev,
       [id]: value,
     }));
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
       [id]: undefined,
     }));
@@ -45,54 +56,64 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
     setSubmitted(true);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   return (
     <div className="fixed inset-0 bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-8 z-50">
-      <button
-        className="absolute top-8 right-12 z-50 text-2xl p-2 rounded-full bg-white dark:bg-gray-800 shadow text-black dark:text-white"
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        title="Toggle theme"
-      >
-        {theme === "light" ? <FaMoon /> : <FaSun />}
-      </button>
-      <div className="flex gap-4 mb-6 mt-2 items-center">
+      <div className="flex items-center justify-between mb-6 w-full">
+        {/* Back button always left */}
         <button
-          onClick={() => setPreviewMode("desktop")}
-          className={`relative text-2xl p-2 rounded-full transition ${
-            previewMode === "desktop"
-              ? "bg-blue-500 text-white"
-              : "bg-white dark:bg-gray-800 text-black dark:text-white"
-          }`}
-          title="Desktop"
-        >
-          <FaDesktop />
-        </button>
-        <button
-          onClick={() => setPreviewMode("tablet")}
-          className={`relative text-2xl p-2 rounded-full transition ${
-            previewMode === "tablet"
-              ? "bg-blue-500 text-white"
-              : "bg-white dark:bg-gray-800 text-black dark:text-white"
-          }`}
-          title="Tablet"
-        >
-          <FaTabletAlt />
-        </button>
-        <button
-          onClick={() => setPreviewMode("mobile")}
-          className={`relative text-2xl p-2 rounded-full transition ${
-            previewMode === "mobile"
-              ? "bg-blue-500 text-white"
-              : "bg-white dark:bg-gray-800 text-black dark:text-white"
-          }`}
-          title="Mobile"
-        >
-          <FaMobileAlt />
-        </button>
-        <button
-          className="ml-8 px-4 py-2 border rounded text-black dark:text-white border-gray-300 dark:border-gray-600"
           onClick={() => setPreview(false)}
+          className="flex items-center px-4 py-2 rounded bg-white dark:bg-gray-800 shadow text-lg font-semibold"
         >
-          <span className="inline-flex items-center gap-2"><FaArrowLeft /> Back</span>
+          <IoArrowBack className="mr-2" />
+          Back
+        </button>
+        {/* Device preview buttons hidden on mobile */}
+        <div className="hidden md:flex gap-4 items-center">
+          <button
+            onClick={() => setPreviewMode("desktop")}
+            className={`relative text-2xl p-2 rounded-full transition ${
+              previewMode === "desktop"
+                ? "bg-blue-500 text-white"
+                : "bg-white dark:bg-gray-800 text-black dark:text-white"
+            }`}
+            title="Desktop"
+          >
+            <FaDesktop />
+          </button>
+          <button
+            onClick={() => setPreviewMode("tablet")}
+            className={`relative text-2xl p-2 rounded-full transition ${
+              previewMode === "tablet"
+                ? "bg-blue-500 text-white"
+                : "bg-white dark:bg-gray-800 text-black dark:text-white"
+            }`}
+            title="Tablet"
+          >
+            <FaTabletAlt />
+          </button>
+          <button
+            onClick={() => setPreviewMode("mobile")}
+            className={`relative text-2xl p-2 rounded-full transition ${
+              previewMode === "mobile"
+                ? "bg-blue-500 text-white"
+                : "bg-white dark:bg-gray-800 text-black dark:text-white"
+            }`}
+            title="Mobile"
+          >
+            <FaMobileAlt />
+          </button>
+        </div>
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="ml-4 text-xl p-2 rounded-full bg-white dark:bg-gray-800 shadow"
+          title="Toggle theme"
+        >
+          {theme === "light" ? <FaMoon /> : <FaSun />}
         </button>
       </div>
       <div
@@ -120,12 +141,16 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
             {fields.map((field) => (
               <div
                 key={field.id}
-                ref={el => (fieldRefs.current[field.id] = el)}
+                ref={(el) => (fieldRefs.current[field.id] = el)}
               >
                 <PreviewField
                   field={field}
                   value={formValues[field.id]}
-                  setValue={submitted ? undefined : (val) => handleFieldChange(field.id, val)}
+                  setValue={
+                    submitted
+                      ? undefined
+                      : (val) => handleFieldChange(field.id, val)
+                  }
                   readonly={submitted}
                   error={errors[field.id]}
                 />

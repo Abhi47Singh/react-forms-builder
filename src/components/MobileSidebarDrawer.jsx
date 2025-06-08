@@ -15,6 +15,9 @@ export default function MobileSidebarDrawer({
   config,
   setConfig,
   updateField,
+  handleShare,
+  openMobilePreview,
+  openDesktopPreview,
 }) {
   const [menuKey, setMenuKey] = useState(0);
 
@@ -23,6 +26,19 @@ export default function MobileSidebarDrawer({
       setMenuKey((k) => k + 1); // Change key to force remount
     }
   }, [open, tab]);
+
+  useEffect(() => {
+    if (tab === "preview") {
+      if (window.innerWidth < 840) {
+        if (typeof openMobilePreview === "function") openMobilePreview();
+      } else {
+        if (typeof openDesktopPreview === "function") openDesktopPreview();
+      }
+      setTab(null);
+      onClose();
+    }
+    // eslint-disable-next-line
+  }, [tab]);
 
   const menuOptions = [
     { label: "Components", value: "components" },
@@ -165,6 +181,48 @@ export default function MobileSidebarDrawer({
               />
             </div>
           ) : null}
+
+          {tab === "share" && (
+            <div className="flex flex-col items-center justify-center w-full h-full mt-[40%]">
+              <button
+                onClick={() => {
+                  console.log("Share button clicked!");
+                  handleShare();
+                }}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg text-xl font-semibold mt-8"
+              >
+                Copy Share Link
+              </button>
+              <p className="mt-4 text-gray-500 text-center">
+                Tap the button to copy a shareable link for your form.
+              </p>
+            </div>
+          )}
+
+          {tab === "preview" && (
+            <div className="flex flex-col items-center justify-center w-full h-full">
+              <button
+                onClick={() => {
+                  if (window.innerWidth < 840) {
+                    setTab(null);
+                    onClose();
+                    // Call a prop to open mobile preview
+                    if (typeof openMobilePreview === "function")
+                      openMobilePreview();
+                  } else {
+                    setTab(null);
+                    onClose();
+                    // Call a prop to open desktop preview
+                    if (typeof openDesktopPreview === "function")
+                      openDesktopPreview();
+                  }
+                }}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg text-xl font-semibold mt-8"
+              >
+                Open Preview
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

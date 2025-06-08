@@ -24,10 +24,13 @@ export default function FormBuilder({
   overId,
   isSidebarDragging,
   COMPONENTS,
-  TEMPLATES, // <-- add this
+  TEMPLATES,
   onUseTemplate,
   tab,
   setTab,
+  handleShare,
+  openMobilePreview, // <-- add this
+  openDesktopPreview, // <-- add this
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
@@ -42,16 +45,9 @@ export default function FormBuilder({
   const handleEdit = (field) => {
     setConfig({ ...field });
     if (window.innerWidth < 840) {
-      setTab("config"); // Show config page in drawer
-      setDrawerOpen(true); // Open the mobile drawer
+      setTab("config");
+      setDrawerOpen(true);
     }
-  };
-
-  const handleShare = () => {
-    const json = JSON.stringify(fields);
-    const encoded = encodeURIComponent(btoa(json));
-    const shareUrl = `${window.location.origin}${window.location.pathname}?form=${encoded}`;
-    window.prompt("Copy and share this link:", shareUrl);
   };
 
   let rows = [];
@@ -67,7 +63,6 @@ export default function FormBuilder({
       );
       i += 2;
     } else {
-      // Insert placeholder if dragging from sidebar and over this field
       if (isSidebarDragging && overId === fields[i].id) {
         rows.push(
           <div
@@ -90,7 +85,6 @@ export default function FormBuilder({
       i += 1;
     }
   }
-  // If overId is null and dragging from sidebar, show placeholder at end
   if (isSidebarDragging && overId === null) {
     rows.push(
       <div
@@ -125,6 +119,9 @@ export default function FormBuilder({
         config={config}
         setConfig={setConfig}
         updateField={updateField}
+        handleShare={handleShare} // <-- pass down
+        openMobilePreview={openMobilePreview}
+        openDesktopPreview={openDesktopPreview}
       />
 
       {/* Action buttons */}

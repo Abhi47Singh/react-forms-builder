@@ -17,7 +17,7 @@ import useUndoRedo from "./hooks/useUndoRedo";
 import SortableField from "./components/SortableField";
 import { typeIcons } from "./components/icons";
 import TEMPLATES from "./data/templates";
-import MobileSidebarDrawer from "./components/MobileSidebarDrawer"; // <-- Make sure this is imported
+import MobileSidebarDrawer from "./components/MobileSidebarDrawer";
 
 const COMPONENTS = [
   { type: "name", label: "Name" },
@@ -54,12 +54,12 @@ export default function App() {
   const [theme, setTheme] = useState("light");
   const [config, setConfig] = useState(null);
   const [tab, setTab] = useState("components");
-  const [drawerOpen, setDrawerOpen] = useState(false); // <-- For mobile drawer
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const [isSidebarDragging, setIsSidebarDragging] = useState(false);
   const [draggedSidebarType, setDraggedSidebarType] = useState(null);
   const [overId, setOverId] = useState(null);
-
+  const [mobilePreview, setMobilePreview] = useState(false);
   // Persist theme
   useEffect(() => {
     document.documentElement.className = theme;
@@ -94,7 +94,18 @@ export default function App() {
     const json = JSON.stringify(fields);
     const encoded = encodeURIComponent(btoa(json));
     const shareUrl = `${window.location.origin}${window.location.pathname}?form=${encoded}`;
-    window.prompt("Copy and share this link:", shareUrl);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).then(
+        () => {
+          alert("Share link copied to clipboard!");
+        },
+        () => {
+          window.prompt("Copy and share this link:", shareUrl);
+        }
+      );
+    } else {
+      window.prompt("Copy and share this link:", shareUrl);
+    }
   };
 
   const sensors = useSensors(
@@ -208,7 +219,7 @@ export default function App() {
 
   const handleUseTemplate = (tpl) => {
     setFields(withFreshIds(tpl.fields));
-    setDrawerOpen(false); // Optionally close drawer after using template
+    setDrawerOpen(false);
   };
 
   // For mobile: open drawer and reset tab to null (menu) or "components"
@@ -237,13 +248,25 @@ export default function App() {
         COMPONENTS={COMPONENTS}
         TEMPLATES={TEMPLATES}
         tab={tab}
+        setTab={setTab}
         config={config}
         setConfig={setConfig}
-        setTab={setTab}
+        updateField={updateField}
         onUseTemplate={handleUseTemplate}
+        handleShare={handleShare}
+        openMobilePreview={() => setMobilePreview(true)}
+        openDesktopPreview={() => setPreview(true)}
       />
 
       {/* Preview modal */}
+      {mobilePreview && (
+        <PreviewModal
+          fields={fields}
+          setPreview={() => setMobilePreview(false)}
+          theme={theme}
+          setTheme={setTheme}
+        />
+      )}
       {preview && (
         <PreviewModal
           fields={fields}
@@ -289,8 +312,9 @@ export default function App() {
             tab={tab}
             setTab={setTab}
             COMPONENTS={COMPONENTS}
-            TEMPLATES={TEMPLATES} // <-- ADD THIS LINE
+            TEMPLATES={TEMPLATES}
             onUseTemplate={handleUseTemplate}
+            handleShare={handleShare} // <-- pass down to FormBuilder
           />
         </div>
         <DragOverlay>
