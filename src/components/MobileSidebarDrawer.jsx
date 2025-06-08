@@ -90,7 +90,7 @@ export default function MobileSidebarDrawer({
         {/* Main Menu or Submenu */}
         <div
           className="flex flex-col items-center w-full gap-4 px-2 overflow-y-auto"
-          style={{ maxHeight: "70vh" }}
+          style={{ maxHeight: "100vh" }}
           key={menuKey}
         >
           {tab === null && (

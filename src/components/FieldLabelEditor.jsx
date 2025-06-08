@@ -6,7 +6,7 @@ export default function FieldLabelEditor({ field, onEdit, listeners, attributes 
   const Icon = typeIcons[field.type];
 
   return (
-    <div className="mb-2 flex items-center justify-around relative w-full">
+    <div className="mb-2 flex items-center justify- relative w-full">
       <span
         {...listeners}
         {...attributes}
