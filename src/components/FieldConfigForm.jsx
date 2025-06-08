@@ -1,7 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import { FaPlus, FaMinus, FaAsterisk } from "react-icons/fa";
 
-export default function FieldConfigForm({ config, setConfig, updateField, onCancel }) {
+export default function FieldConfigForm({
+  config,
+  setConfig,
+  updateField,
+  onCancel,
+}) {
   const labelInputRef = useRef(null);
   const prevConfigType = useRef();
   const [localValue, setLocalValue] = useState(config.placeholder || "");
@@ -63,7 +68,7 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
   };
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl">Configure {config.type}</h3>
         {/* REMOVE the top-right cancel button */}
@@ -81,7 +86,7 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
               <input
                 className="flex-1 p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
                 value={opt}
-                onChange={e => handleOptionChange(idx, e.target.value)}
+                onChange={(e) => handleOptionChange(idx, e.target.value)}
                 placeholder={`Option ${idx + 1}`}
               />
               <button
@@ -114,43 +119,43 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
             ref={labelInputRef}
             className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
             value={config.label || ""}
-            onChange={e => setConfig({ ...config, label: e.target.value })}
+            onChange={(e) => setConfig({ ...config, label: e.target.value })}
             placeholder="Field label"
           />
         </div>
       )}
 
       {/* Placeholder with live validation */}
-      {config.type !== "hr" && config.type !== "p" && config.type !== "submit" && (
-        <div className="mb-4">
-          <label className="block mb-2 font-semibold">Example Value</label>
-          <input
-            className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
-            value={localValue}
-            onChange={e => setLocalValue(e.target.value)}
-            placeholder={
-              config.type === "email"
-                ? "name123@gmail.com"
-                : config.type === "number"
-                ? "12345"
-                : "Placeholder text"
-            }
-          />
-          {config.type === "email" && (
-            <div className="text-xs text-gray-400 mt-1">
-              Example: <span className="font-mono">name123@gmail.com</span>
-            </div>
-          )}
-          {config.type === "number" && (
-            <div className="text-xs text-gray-400 mt-1">
-              Example: <span className="font-mono">12345</span>
-            </div>
-          )}
-          {error && (
-            <div className="text-xs text-red-400 mt-1">{error}</div>
-          )}
-        </div>
-      )}
+      {config.type !== "hr" &&
+        config.type !== "p" &&
+        config.type !== "submit" && (
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Example Value</label>
+            <input
+              className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
+              value={localValue}
+              onChange={(e) => setLocalValue(e.target.value)}
+              placeholder={
+                config.type === "email"
+                  ? "name123@gmail.com"
+                  : config.type === "number"
+                  ? "12345"
+                  : "Placeholder text"
+              }
+            />
+            {config.type === "email" && (
+              <div className="text-xs text-gray-400 mt-1">
+                Example: <span className="font-mono">name123@gmail.com</span>
+              </div>
+            )}
+            {config.type === "number" && (
+              <div className="text-xs text-gray-400 mt-1">
+                Example: <span className="font-mono">12345</span>
+              </div>
+            )}
+            {error && <div className="text-xs text-red-400 mt-1">{error}</div>}
+          </div>
+        )}
 
       {/* Required */}
       {config.type !== "hr" && config.type !== "p" && (
@@ -158,7 +163,9 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
           <input
             type="checkbox"
             checked={!!config.required}
-            onChange={e => setConfig({ ...config, required: e.target.checked })}
+            onChange={(e) =>
+              setConfig({ ...config, required: e.target.checked })
+            }
             id="required"
           />
           <label htmlFor="required" className="flex items-center gap-1">
@@ -172,11 +179,15 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
         <div className="mb-4">
           <label className="block mb-2 font-semibold">Width</label>
           <div className="flex gap-2">
-            {[100, 50].map(val => (
+            {[100, 50].map((val) => (
               <button
                 key={val}
                 type="button"
-                className={`px-4 py-2 rounded border ${config.width === val ? "bg-blue-600 text-white border-blue-600" : "bg-white dark:bg-gray-900 text-black dark:text-white border-gray-300 dark:border-gray-700"}`}
+                className={`px-4 py-2 rounded border ${
+                  config.width === val
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white dark:bg-gray-900 text-black dark:text-white border-gray-300 dark:border-gray-700"
+                }`}
                 onClick={() => setConfig({ ...config, width: val })}
               >
                 {val}%
@@ -192,7 +203,7 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
           <input
             type="checkbox"
             checked={!!config.multi}
-            onChange={e => setConfig({ ...config, multi: e.target.checked })}
+            onChange={(e) => setConfig({ ...config, multi: e.target.checked })}
             id="multi"
           />
           <label htmlFor="multi" className="flex items-center gap-1">
@@ -201,7 +212,6 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
         </div>
       )}
 
-
       {/* HR (line) specific settings */}
       {config.type === "hr" && (
         <div className="mb-4 space-y-4">
@@ -209,11 +219,15 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
           <div>
             <label className="block mb-2 font-semibold">Thickness (px)</label>
             <div className="flex gap-2">
-              {[1, 3, 5].map(val => (
+              {[1, 3, 5].map((val) => (
                 <button
                   key={val}
                   type="button"
-                  className={`px-4 py-2 rounded border ${config.thickness === val ? "bg-blue-600 text-white border-blue-600" : "bg-white dark:bg-gray-900 text-black dark:text-white border-gray-300 dark:border-gray-700"}`}
+                  className={`px-4 py-2 rounded border ${
+                    config.thickness === val
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white dark:bg-gray-900 text-black dark:text-white border-gray-300 dark:border-gray-700"
+                  }`}
                   onClick={() => setConfig({ ...config, thickness: val })}
                 >
                   {val}px
@@ -226,7 +240,7 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
             <input
               type="checkbox"
               checked={!!config.bold}
-              onChange={e => setConfig({ ...config, bold: e.target.checked })}
+              onChange={(e) => setConfig({ ...config, bold: e.target.checked })}
               id="bold"
             />
             <label htmlFor="bold" className="flex items-center gap-1">
@@ -239,7 +253,7 @@ export default function FieldConfigForm({ config, setConfig, updateField, onCanc
             <select
               className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"
               value={config.style || "solid"}
-              onChange={e => setConfig({ ...config, style: e.target.value })}
+              onChange={(e) => setConfig({ ...config, style: e.target.value })}
             >
               <option value="solid">Solid</option>
               <option value="dashed">Dashed</option>

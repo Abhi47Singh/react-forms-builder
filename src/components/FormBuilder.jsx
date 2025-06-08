@@ -12,6 +12,7 @@ import { RiMenu2Fill } from "react-icons/ri";
 import MobileSidebarDrawer from "./MobileSidebarDrawer";
 
 export default function FormBuilder({
+  config,
   fields,
   updateField,
   removeField,
@@ -23,7 +24,7 @@ export default function FormBuilder({
   overId,
   isSidebarDragging,
   COMPONENTS,
-  TEMPLATES,                      // <-- add this
+  TEMPLATES, // <-- add this
   onUseTemplate,
   tab,
   setTab,
@@ -40,6 +41,10 @@ export default function FormBuilder({
 
   const handleEdit = (field) => {
     setConfig({ ...field });
+    if (window.innerWidth < 840) {
+      setTab("config"); // Show config page in drawer
+      setDrawerOpen(true); // Open the mobile drawer
+    }
   };
 
   const handleShare = () => {
@@ -113,10 +118,13 @@ export default function FormBuilder({
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         COMPONENTS={COMPONENTS}
-        TEMPLATES={TEMPLATES}         // <-- add this
+        TEMPLATES={TEMPLATES}
         tab={tab}
         setTab={setTab}
         onUseTemplate={onUseTemplate}
+        config={config}
+        setConfig={setConfig}
+        updateField={updateField}
       />
 
       {/* Action buttons */}
@@ -136,7 +144,9 @@ export default function FormBuilder({
           onClick={handleShare}
         >
           <IoShareSocial />
-          <span className="hidden lg:inline group-hover:inline">Share Form</span>
+          <span className="hidden lg:inline group-hover:inline">
+            Share Form
+          </span>
         </button>
 
         {/* Undo button */}

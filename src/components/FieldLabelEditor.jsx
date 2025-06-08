@@ -2,7 +2,7 @@ import React from "react";
 import { FaArrowsAlt, FaPen } from "react-icons/fa";
 import { typeIcons } from "./icons";
 
-export default function FieldLabelEditor({
+export default function ({
   field,
   onEdit,
   listeners,

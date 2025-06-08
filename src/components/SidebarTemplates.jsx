@@ -6,7 +6,7 @@ export default function SidebarTemplates({ templates = [], onUseTemplate }) {
       {templates.map((tpl) => (
         <div
           key={tpl.name}
-          className="ms:w-full w-1/2 max-w-md mb-4 p-4 bg-white dark:bg-gray-700 roundeds flex flex-col ms:flex-row items-center justify-around rounded-lg"
+          className="ms:w-full w-[80%] max-w-md mb-4 p-4 bg-white dark:bg-gray-700 roundeds flex flex-col ms:flex-row items-center justify-around rounded-lg"
         >
           <div className="font-semibold mb-2">{tpl.name}</div>
           <button

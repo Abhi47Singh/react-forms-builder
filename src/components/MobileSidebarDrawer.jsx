@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
 import SidebarTemplates from "./SidebarTemplates";
 import { typeIcons } from "./icons"; // Adjust path if needed
+import FieldConfigForm from "./FieldConfigForm";
 
 export default function MobileSidebarDrawer({
   open,
@@ -11,6 +12,9 @@ export default function MobileSidebarDrawer({
   setTab,
   onClose,
   onUseTemplate,
+  config,
+  setConfig,
+  updateField,
 }) {
   const [menuKey, setMenuKey] = useState(0);
 
@@ -96,7 +100,8 @@ export default function MobileSidebarDrawer({
           {tab === null && (
             <div
               key={menuKey}
-              className="w-full flex flex-col items-center h-[100vh] mt-[40%]"
+              className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] -mt-10" // 64px = approx. top bar height
+              style={{ minHeight: "100vh" }}
             >
               {menuOptions.map((opt, i) => (
                 <button
@@ -125,8 +130,11 @@ export default function MobileSidebarDrawer({
                   key={comp.type}
                   className="flex items-center justify-evenly bg-gray-100 dark:bg-gray-700 rounded-lg py-4 text-lg font-semibold shadow hover:bg-gray-200 dark:hover:bg-gray-600 transition cursor-pointer text-center w-[80%] mx-auto xs500:flex-row xxs:flex-col flex-row"
                 >
-                  <span className={`${comp.type === "submit" ? "text-3xl" : ""}`}>
-                    {typeIcons[comp.type] && React.createElement(typeIcons[comp.type])}
+                  <span
+                    className={`${comp.type === "submit" ? "text-3xl" : ""}`}
+                  >
+                    {typeIcons[comp.type] &&
+                      React.createElement(typeIcons[comp.type])}
                   </span>
                   <span className="">{comp.label}</span>
                 </div>
@@ -142,6 +150,21 @@ export default function MobileSidebarDrawer({
               />
             </div>
           )}
+
+          {tab === "config" && config ? (
+            <div className="w-full px-6">
+              <FieldConfigForm
+                config={config}
+                setConfig={setConfig}
+                updateField={updateField}
+                onCancel={() => {
+                  setConfig(null);
+                  setTab(null);
+                  onClose();
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

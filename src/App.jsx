@@ -237,6 +237,8 @@ export default function App() {
         COMPONENTS={COMPONENTS}
         TEMPLATES={TEMPLATES}
         tab={tab}
+        config={config}
+        setConfig={setConfig}
         setTab={setTab}
         onUseTemplate={handleUseTemplate}
       />
@@ -273,6 +275,7 @@ export default function App() {
             setTab={setTab}
           />
           <FormBuilder
+            config={config}
             fields={fields}
             updateField={updateField}
             removeField={removeField}
@@ -286,7 +289,7 @@ export default function App() {
             tab={tab}
             setTab={setTab}
             COMPONENTS={COMPONENTS}
-            TEMPLATES={TEMPLATES}         // <-- ADD THIS LINE
+            TEMPLATES={TEMPLATES} // <-- ADD THIS LINE
             onUseTemplate={handleUseTemplate}
           />
         </div>
