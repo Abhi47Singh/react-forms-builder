@@ -2,11 +2,16 @@ import React from "react";
 import { FaArrowsAlt, FaPen } from "react-icons/fa";
 import { typeIcons } from "./icons";
 
-export default function FieldLabelEditor({ field, onEdit, listeners, attributes }) {
+export default function FieldLabelEditor({
+  field,
+  onEdit,
+  listeners,
+  attributes,
+}) {
   const Icon = typeIcons[field.type];
 
   return (
-    <div className="mb-2 flex items-center justify- relative w-full">
+    <div className="mb-2 flex items-center justify-evenly relative w-full">
       <span
         {...listeners}
         {...attributes}
