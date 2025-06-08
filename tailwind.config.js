@@ -6,8 +6,19 @@ export default {
   ],
   
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'none' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 0.4s ease forwards',
+      },
+    },
     screens: {
+      xxs: '400px',
       xs500: '500px', // added custom breakpoint for extra small screens
       sm: '640px',
       md: '768px',

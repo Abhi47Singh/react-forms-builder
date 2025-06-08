@@ -1,11 +1,25 @@
-import React from "react";
-import { IoClose } from "react-icons/io5";
+import React, { useEffect, useState } from "react";
+import { IoClose, IoArrowBack } from "react-icons/io5";
+import SidebarTemplates from "./SidebarTemplates";
+import { typeIcons } from "./icons"; // Adjust path if needed
 
 export default function MobileSidebarDrawer({
   open,
+  COMPONENTS,
+  TEMPLATES,
+  tab,
+  setTab,
   onClose,
-  onSelect,
+  onUseTemplate,
 }) {
+  const [menuKey, setMenuKey] = useState(0);
+
+  useEffect(() => {
+    if (open && tab === null) {
+      setMenuKey((k) => k + 1); // Change key to force remount
+    }
+  }, [open, tab]);
+
   const menuOptions = [
     { label: "Components", value: "components" },
     { label: "Templates", value: "templates" },
@@ -18,9 +32,15 @@ export default function MobileSidebarDrawer({
       className={`
         fixed inset-0 z-50 bg-black/40 backdrop-blur-md ms:hidden
         transition-all duration-300
-        ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+        ${
+          open
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }
       `}
     >
+      {/* Click outside to close */}
+      <div className="fixed inset-0" onClick={onClose} />
       <div
         className={`
           fixed top-0 left-0 h-full
@@ -32,42 +52,98 @@ export default function MobileSidebarDrawer({
           width: "85vw",
           maxWidth: "none",
         }}
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
       >
-        {/* Top Bar with only X */}
-        <div className="flex items-center justify-end p-4">
-          <button
-            onClick={onClose}
-            className="text-2xl text-gray-600 hover:text-red-500"
-          >
-            <IoClose />
-          </button>
+        {/* Top Bar */}
+        <div className="flex items-center justify-between p-4">
+          {tab !== null ? (
+            <>
+              <button
+                onClick={() => setTab(null)}
+                className="text-2xl text-gray-600 hover:text-blue-500"
+              >
+                <IoArrowBack />
+              </button>
+              <div className="flex-1 text-right font-bold text-xl pr-8">
+                {menuOptions.find((opt) => opt.value === tab)?.label}
+              </div>
+              <button
+                onClick={onClose}
+                className="text-2xl text-gray-600 hover:text-red-500 ml-2"
+              >
+                <IoClose />
+              </button>
+            </>
+          ) : (
+            <>
+              <div />
+              <button
+                onClick={onClose}
+                className="text-2xl text-gray-600 hover:text-red-500"
+              >
+                <IoClose />
+              </button>
+            </>
+          )}
         </div>
-        {/* Centered Menu Options with Stagger Animation */}
-        <div className="flex flex-col items-center justify-center h-[80vh] w-full gap-8">
-          {menuOptions.map((opt, i) => (
-            <button
-              key={opt.value}
-              onClick={() => onSelect && onSelect(opt.value)}
-              className={`
-                text-2xl font-semibold w-3/4 py-4 rounded-lg
-                hover:bg-gray-200 dark:hover:bg-gray-700
-                hover:underline hover:text-blue-600 dark:hover:text-blue-400
-                transition-all duration-300
-                ${open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-              `}
-              style={{
-                transitionDelay: open
-                  ? `${i * 120 + 100}ms`
-                  : `${(menuOptions.length - i) * 80}ms`,
-              }}
+
+        {/* Main Menu or Submenu */}
+        <div
+          className="flex flex-col items-center w-full gap-4 px-2 overflow-y-auto"
+          style={{ maxHeight: "70vh" }}
+          key={menuKey}
+        >
+          {tab === null && (
+            <div
+              key={menuKey}
+              className="w-full flex flex-col items-center h-[100vh] mt-[40%]"
             >
-              {opt.label}
-            </button>
-          ))}
+              {menuOptions.map((opt, i) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setTab(opt.value)}
+                  className={`
+                    text-2xl font-semibold w-3/4 py-4 rounded-lg
+                    hover:bg-gray-200 dark:hover:bg-gray-700
+                    hover:underline hover:text-blue-600 dark:hover:text-blue-400
+                    transition-all duration-300
+                    opacity-0 animate-fade-in
+                  `}
+                  style={{ animationDelay: `${i * 80}ms` }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {tab === "components" && (
+            <div className="grid w-full mt-14 gap-y-6 mb-32 xxs:grid-cols-2 grid-cols-1">
+              {/* Render components as draggable items */}
+              {COMPONENTS.map((comp, i) => (
+                <div
+                  key={comp.type}
+                  className="flex items-center justify-evenly bg-gray-100 dark:bg-gray-700 rounded-lg py-4 text-lg font-semibold shadow hover:bg-gray-200 dark:hover:bg-gray-600 transition cursor-pointer text-center w-[80%] mx-auto xs500:flex-row xxs:flex-col flex-row"
+                >
+                  <span className={`${comp.type === "submit" ? "text-3xl" : ""}`}>
+                    {typeIcons[comp.type] && React.createElement(typeIcons[comp.type])}
+                  </span>
+                  <span className="">{comp.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {tab === "templates" && (
+            <div className="flex flex-col justify-between items-center w-full mt-8 gap-8">
+              <SidebarTemplates
+                templates={TEMPLATES}
+                onUseTemplate={onUseTemplate}
+              />
+            </div>
+          )}
         </div>
       </div>
-      {/* Click outside to close */}
-      <div className="fixed inset-0" onClick={onClose} />
     </div>
   );
 }

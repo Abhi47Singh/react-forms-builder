@@ -1,13 +1,16 @@
 import React from "react";
 
-export default function SidebarTemplates({ templates, onUseTemplate }) {
+export default function SidebarTemplates({ templates = [], onUseTemplate }) {
   return (
-    <div>
+    <div className="flex flex-col w-full items-center gap-4 mt-8 overflow-scroll">
       {templates.map((tpl) => (
-        <div key={tpl.name} className="mb-4 p-2 bg-white dark:bg-gray-700 rounded shadow">
-          <div className="font-semibold mb-1">{tpl.name}</div>
+        <div
+          key={tpl.name}
+          className="ms:w-full w-1/2 max-w-md mb-4 p-4 bg-white dark:bg-gray-700 roundeds flex flex-col ms:flex-row items-center justify-around rounded-lg"
+        >
+          <div className="font-semibold mb-2">{tpl.name}</div>
           <button
-            className="px-2 py-1 bg-blue-600 text-white rounded text-sm"
+            className="px-3 py-2 bg-blue-600 text-white rounded text-sm"
             onClick={() => onUseTemplate(tpl)}
           >
             Use this form

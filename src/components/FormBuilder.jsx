@@ -23,12 +23,14 @@ export default function FormBuilder({
   overId,
   isSidebarDragging,
   COMPONENTS,
+  TEMPLATES,                      // <-- add this
   onUseTemplate,
+  tab,
+  setTab,
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [tab, setTab] = useState("components");
 
   useEffect(() => {
     if (dropzoneRef.current) {
@@ -111,6 +113,7 @@ export default function FormBuilder({
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         COMPONENTS={COMPONENTS}
+        TEMPLATES={TEMPLATES}         // <-- add this
         tab={tab}
         setTab={setTab}
         onUseTemplate={onUseTemplate}

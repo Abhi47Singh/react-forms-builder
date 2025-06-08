@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useState, useEffect } from "react";
 import { FaSun, FaMoon } from "react-icons/fa";
 import {
@@ -15,8 +14,10 @@ import Sidebar from "./components/Sidebar";
 import FormBuilder from "./components/FormBuilder";
 import PreviewModal from "./components/PreviewModal";
 import useUndoRedo from "./hooks/useUndoRedo";
-import SortableField from "./components/SortableField"; // or your field preview component
-import { typeIcons } from "./components/icons"; // for icon previews
+import SortableField from "./components/SortableField";
+import { typeIcons } from "./components/icons";
+import TEMPLATES from "./data/templates";
+import MobileSidebarDrawer from "./components/MobileSidebarDrawer"; // <-- Make sure this is imported
 
 const COMPONENTS = [
   { type: "name", label: "Name" },
@@ -52,8 +53,9 @@ export default function App() {
   const [preview, setPreview] = useState(false);
   const [theme, setTheme] = useState("light");
   const [config, setConfig] = useState(null);
+  const [tab, setTab] = useState("components");
+  const [drawerOpen, setDrawerOpen] = useState(false); // <-- For mobile drawer
 
-  // NEW: flag to know if a true drag started from sidebar
   const [isSidebarDragging, setIsSidebarDragging] = useState(false);
   const [draggedSidebarType, setDraggedSidebarType] = useState(null);
   const [overId, setOverId] = useState(null);
@@ -95,22 +97,19 @@ export default function App() {
     window.prompt("Copy and share this link:", shareUrl);
   };
 
-  // Use delay so that quick clicks never start a drag
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { distance: 10 }, // Only drag after moving 10px
+      activationConstraint: { distance: 10 },
     })
   );
 
-  // Called when any drag starts
   const handleDragStart = ({ active }) => {
     if (active.data?.current?.fromSidebar) {
       setIsSidebarDragging(true);
-      setDraggedSidebarType(active.id.replace("sidebar-", "")); // Track type for overlay
+      setDraggedSidebarType(active.id.replace("sidebar-", ""));
     }
   };
 
-  // Called when drag finishes (either drop or cancel)
   const handleDragEnd = ({ active, over }) => {
     setDraggedSidebarType(null);
     setOverId(null);
@@ -146,7 +145,6 @@ export default function App() {
       return;
     }
 
-    // Now handle reorder if it was an internal move
     if (!active.data?.current?.fromSidebar && active.id !== over?.id) {
       const oldIndex = fields.findIndex((f) => f.id === active.id);
       const newIndex = fields.findIndex((f) => f.id === over.id);
@@ -158,10 +156,9 @@ export default function App() {
 
   const handleDragCancel = () => {
     setIsSidebarDragging(false);
-    setDraggedSidebarType(null); // Clear overlay
+    setDraggedSidebarType(null);
   };
 
-  // Helper to add one or two fields (for name @50%)
   const addField = (cfg) => {
     const count = cfg.type === "name" && cfg.width === 50 ? 2 : 1;
     const newFields = [];
@@ -175,7 +172,6 @@ export default function App() {
     setFields((prev) => [...prev, ...newFields]);
   };
 
-  // Update/add/remove handlers using setFields
   const updateField = (id, updates) => {
     if (Object.keys(updates).length === 1 && updates.value !== undefined) {
       setFields(
@@ -183,10 +179,12 @@ export default function App() {
         { skipHistory: true }
       );
     } else {
-      setFields((prev) => prev.map((f) => (f.id === id ? { ...f, ...updates } : f)));
+      setFields((prev) =>
+        prev.map((f) => (f.id === id ? { ...f, ...updates } : f))
+      );
     }
   };
-  // CHANGED: Remove field and close config if needed
+
   const removeField = (id) => {
     setFields((prev) => prev.filter((f) => f.id !== id));
     if (config && config.id === id) {
@@ -194,15 +192,13 @@ export default function App() {
     }
   };
 
-  // CHANGED: Clear all fields and close config
   const handleClearAll = () => {
     clearAll();
-    setFields([]); // Force fields to empty immediately
+    setFields([]);
     localStorage.removeItem("hypergo_builder_fields");
     setConfig(null);
   };
 
-  // Helper to generate unique IDs for template fields
   function withFreshIds(fields) {
     return fields.map((f, i) => ({
       ...f,
@@ -212,6 +208,13 @@ export default function App() {
 
   const handleUseTemplate = (tpl) => {
     setFields(withFreshIds(tpl.fields));
+    setDrawerOpen(false); // Optionally close drawer after using template
+  };
+
+  // For mobile: open drawer and reset tab to null (menu) or "components"
+  const openDrawer = () => {
+    setTab(null);
+    setDrawerOpen(true);
   };
 
   return (
@@ -226,6 +229,17 @@ export default function App() {
       >
         {theme === "light" ? <FaMoon /> : <FaSun />}
       </button>
+
+      {/* Mobile Sidebar Drawer */}
+      <MobileSidebarDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        COMPONENTS={COMPONENTS}
+        TEMPLATES={TEMPLATES}
+        tab={tab}
+        setTab={setTab}
+        onUseTemplate={handleUseTemplate}
+      />
 
       {/* Preview modal */}
       {preview && (
@@ -247,13 +261,16 @@ export default function App() {
       >
         <div className="flex h-screen">
           <Sidebar
-            onAdd={addField}
             COMPONENTS={COMPONENTS}
+            TEMPLATES={TEMPLATES}
+            onAdd={addField}
             setPreview={setPreview}
             config={config}
             setConfig={setConfig}
             updateField={updateField}
-            onUseTemplate={handleUseTemplate} // <-- add this
+            onUseTemplate={handleUseTemplate}
+            tab={tab}
+            setTab={setTab}
           />
           <FormBuilder
             fields={fields}
@@ -266,17 +283,24 @@ export default function App() {
             clearAll={handleClearAll}
             overId={overId}
             isSidebarDragging={isSidebarDragging}
+            tab={tab}
+            setTab={setTab}
+            COMPONENTS={COMPONENTS}
+            TEMPLATES={TEMPLATES}         // <-- ADD THIS LINE
+            onUseTemplate={handleUseTemplate}
           />
         </div>
-        {/* Drag preview overlay */}
         <DragOverlay>
           {draggedSidebarType ? (
             <div className="p-4 rounded border bg-white dark:bg-gray-800 shadow-lg flex items-center gap-2 min-w-[120px]">
               {typeIcons[draggedSidebarType] && (
-                <span className="text-xl">{React.createElement(typeIcons[draggedSidebarType])}</span>
+                <span className="text-xl">
+                  {React.createElement(typeIcons[draggedSidebarType])}
+                </span>
               )}
               <span className="capitalize font-semibold">
-                {COMPONENTS.find(c => c.type === draggedSidebarType)?.label || draggedSidebarType}
+                {COMPONENTS.find((c) => c.type === draggedSidebarType)?.label ||
+                  draggedSidebarType}
               </span>
             </div>
           ) : null}
