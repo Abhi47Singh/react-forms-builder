@@ -171,16 +171,7 @@ export default function App() {
   };
 
   const addField = (cfg) => {
-    const count = cfg.type === "name" && cfg.width === 50 ? 2 : 1;
-    const newFields = [];
-    for (let i = 0; i < count; i++) {
-      newFields.push({
-        ...cfg,
-        id: `${cfg.type}-${Date.now()}-${i}`,
-        value: "",
-      });
-    }
-    setFields((prev) => [...prev, ...newFields]);
+    setFields((prev) => [...prev, { ...cfg }]);
   };
 
   const updateField = (id, updates) => {
@@ -243,6 +234,7 @@ export default function App() {
 
       {/* Mobile Sidebar Drawer */}
       <MobileSidebarDrawer
+        onAddField={addField}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         COMPONENTS={COMPONENTS}

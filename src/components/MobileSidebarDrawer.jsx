@@ -18,6 +18,7 @@ export default function MobileSidebarDrawer({
   handleShare,
   openMobilePreview,
   openDesktopPreview,
+  onAddField, // <-- Add this line
 }) {
   const [menuKey, setMenuKey] = useState(0);
 
@@ -142,9 +143,23 @@ export default function MobileSidebarDrawer({
             <div className="grid w-full mt-14 gap-y-6 mb-32 xxs:grid-cols-2 grid-cols-1">
               {/* Render components as draggable items */}
               {COMPONENTS.map((comp, i) => (
-                <div
+                <button
                   key={comp.type}
                   className="flex items-center justify-evenly bg-gray-100 dark:bg-gray-700 rounded-lg py-4 text-lg font-semibold shadow hover:bg-gray-200 dark:hover:bg-gray-600 transition cursor-pointer text-center w-[80%] mx-auto xs500:flex-row xxs:flex-col flex-row"
+                  onClick={() => {
+                    setConfig({
+                      ...comp,
+                      id: undefined, // Let config form know it's a new field
+                      label: comp.label,
+                      width: 100,
+                      options:
+                        comp.type === "dropdown" || comp.type === "radio"
+                          ? ["Option 1"]
+                          : undefined,
+                      value: "",
+                    });
+                    setTab("config");
+                  }}
                 >
                   <span
                     className={`${comp.type === "submit" ? "text-3xl" : ""}`}
@@ -153,7 +168,7 @@ export default function MobileSidebarDrawer({
                       React.createElement(typeIcons[comp.type])}
                   </span>
                   <span className="">{comp.label}</span>
-                </div>
+                </button>
               ))}
             </div>
           )}
@@ -173,6 +188,7 @@ export default function MobileSidebarDrawer({
                 config={config}
                 setConfig={setConfig}
                 updateField={updateField}
+                onAddField={onAddField}
                 onCancel={() => {
                   setConfig(null);
                   setTab(null);

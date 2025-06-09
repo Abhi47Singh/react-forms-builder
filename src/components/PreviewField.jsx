@@ -219,7 +219,7 @@ export default function PreviewField({ field, value, setValue, readonly, error }
           <div className="relative mb-4">
             {(field.type === "text" || field.type === "name") && (
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
-                <FaUser />
+                {FaUser}
               </span>
             )}
             {field.type === "email" && (

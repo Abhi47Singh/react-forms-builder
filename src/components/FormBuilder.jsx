@@ -31,6 +31,7 @@ export default function FormBuilder({
   handleShare,
   openMobilePreview, // <-- add this
   openDesktopPreview, // <-- add this
+  onAddField
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);

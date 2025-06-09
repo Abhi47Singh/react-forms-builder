@@ -5,6 +5,7 @@ export default function FieldConfigForm({
   config,
   setConfig,
   updateField,
+  onAddField,
   onCancel,
 }) {
   const labelInputRef = useRef(null);
@@ -41,9 +42,16 @@ export default function FieldConfigForm({
   }, [localValue, config.type]);
 
   const handleSave = () => {
-    if (config.id) {
-      updateField(config.id, { ...config, placeholder: localValue });
+    if (!config.id && typeof onAddField === "function") {
+      // Add a unique id for the new field
+      onAddField({
+        ...config,
+        id: `${config.type}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+      });
+    } else if (config.id && typeof updateField === "function") {
+      updateField(config.id, config);
     }
+    setConfig(null);
     onCancel();
   };
 
@@ -270,9 +278,8 @@ export default function FieldConfigForm({
 
       <div className="flex gap-2 mt-4">
         <button
+          className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold"
           onClick={handleSave}
-          className="flex-1 py-2 bg-green-600 text-white rounded transition-colors duration-150 hover:bg-green-700"
-          disabled={!!error}
         >
           {config.id ? "Save" : "Add to Form"}
         </button>
