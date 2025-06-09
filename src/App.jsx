@@ -11,15 +11,15 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
-import Sidebar from "./components/Sidebar";
-import FormBuilder from "./components/FormBuilder";
-import PreviewModal from "./components/PreviewModal";
+import Sidebar from "./components/SIDEBAR/Sidebar";
+import FormBuilder from "./components/FormSection/FormBuilder";
+import PreviewModal from "./components/Preview/PreviewModal";
 import useUndoRedo from "./hooks/useUndoRedo";
-import SortableField from "./components/SortableField";
-import { typeIcons } from "./components/icons";
+import SortableField from "./components/SIDEBAR/SortableField";
+import { typeIcons } from "./utils/icons";
 import TEMPLATES from "./data/templates";
-import MobileSidebarDrawer from "./components/MobileSidebarDrawer";
-import PopUpMobile from "./components/PopUpMobile";
+import MobileSidebarDrawer from "./components/MobileVersion/MobileSidebarDrawer";
+import PopUpMobile from "./components/MobileVersion/PopUpMobile";
 
 const COMPONENTS = [
   { type: "name", label: "Name" },

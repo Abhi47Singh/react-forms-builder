@@ -7,7 +7,7 @@ import {
   FaMapMarkerAlt,
   FaPhone,
 } from "react-icons/fa";
-import FileDropPreview from "./FileDropPreview";
+import FileDropPreview from "../../FileDropPreview";
 
 export default function PreviewField({
   field,

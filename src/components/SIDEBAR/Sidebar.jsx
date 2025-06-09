@@ -1,7 +1,7 @@
 import React from "react";
 import SidebarDraggable from "./SidebarDraggable";
 import SidebarTemplates from "./SidebarTemplates";
-import FieldConfigForm from "./FieldConfigForm";
+import FieldConfigForm from "../../FieldConfigForm";
 import { FaFileAlt } from "react-icons/fa";
 
 export default function Sidebar({

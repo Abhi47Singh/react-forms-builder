@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
-import SidebarTemplates from "./SidebarTemplates";
-import { typeIcons } from "./icons"; // Adjust path if needed
-import FieldConfigForm from "./FieldConfigForm";
+import SidebarTemplates from "../SIDEBAR/SidebarTemplates";
+import { typeIcons } from "../../utils/icons"; // Adjust path if needed
+import FieldConfigForm from "../../FieldConfigForm";
 
 export default function MobileSidebarDrawer({
   open,

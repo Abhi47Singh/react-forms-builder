@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import FieldLabelEditor from "./FieldLabelEditor";
-import FieldInputRenderer from "./FieldInputRenderer";
-import FieldActions from "./FieldActions";
-import ParagraphField from "./ParagraphField";
-import { typeIcons } from "./icons";
+import FieldLabelEditor from "../../FieldLabelEditor";
+import FieldInputRenderer from "../Preview/FieldInputRenderer";
+import FieldActions from "../../FieldActions";
+import ParagraphField from "../FormSection/ParagraphField";
+import { typeIcons } from "../../utils/icons";
 
 const MIN_SIZE = 10;
 const MAX_SIZE = 50;

@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import PreviewField from "./PreviewField";
-import { validateFields } from "../utils/validation";
+import { validateFields } from "../../utils/validation";
 
 export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
   const [previewMode, setPreviewMode] = useState("desktop");

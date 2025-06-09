@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaArrowsAlt, FaPen } from "react-icons/fa";
 import { TiFlowSwitch } from "react-icons/ti";
-import { typeIcons } from "./icons";
+import { typeIcons } from "./utils/icons";
 
 export default function ({
   field,

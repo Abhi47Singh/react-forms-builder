@@ -1,7 +1,7 @@
 // SidebarDraggable.jsx
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { typeIcons } from "./icons";
+import { typeIcons } from "../../utils/icons";
 
 export default function SidebarDraggable({ type, label, onTapAdd }) {
   const isDesktop = typeof window !== "undefined" && window.innerWidth >= 840;
