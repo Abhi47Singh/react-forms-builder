@@ -180,7 +180,12 @@ export default function MobileSidebarDrawer({
             <div className="flex flex-col justify-between items-center w-full mt-8 gap-8">
               <SidebarTemplates
                 templates={TEMPLATES}
-                onUseTemplate={onUseTemplate}
+                onUseTemplate={(tpl) => {
+                  onUseTemplate(tpl); // Apply the template
+                  setTab(null); // Reset to main menu
+                  setConfig(null); // Clear config
+                  onClose(); // Close the drawer
+                }}
               />
             </div>
           )}
