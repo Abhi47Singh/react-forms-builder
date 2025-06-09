@@ -31,7 +31,7 @@ export default function FormBuilder({
   handleShare,
   openMobilePreview, // <-- add this
   openDesktopPreview, // <-- add this
-  onAddField
+  onAddField,
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
@@ -120,9 +120,10 @@ export default function FormBuilder({
         config={config}
         setConfig={setConfig}
         updateField={updateField}
-        handleShare={handleShare} // <-- pass down
+        handleShare={handleShare}
         openMobilePreview={openMobilePreview}
         openDesktopPreview={openDesktopPreview}
+        onAddField={onAddField} // <-- add this line
       />
 
       {/* Action buttons */}

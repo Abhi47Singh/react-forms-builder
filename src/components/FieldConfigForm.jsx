@@ -43,7 +43,6 @@ export default function FieldConfigForm({
 
   const handleSave = () => {
     if (!config.id && typeof onAddField === "function") {
-      // Add a unique id for the new field
       onAddField({
         ...config,
         id: `${config.type}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
@@ -76,7 +75,7 @@ export default function FieldConfigForm({
   };
 
   return (
-    <div className="w-full">
+    <form className="w-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl">Configure {config.type}</h3>
         {/* REMOVE the top-right cancel button */}
@@ -276,21 +275,23 @@ export default function FieldConfigForm({
         </div>
       )}
 
-      <div className="flex gap-2 mt-4">
+      {/* Place the buttons here */}
+      <div className="flex xs500:flex-row flex-col gap-4 mt-6">
         <button
-          className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+          className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold flex-1"
           onClick={handleSave}
+          type="button"
         >
           {config.id ? "Save" : "Add to Form"}
         </button>
         <button
+          className="bg-red-700 text-white px-8 py-3 rounded-lg text-lg font-semibold flex-1"
           onClick={onCancel}
-          className="flex-1 py-2 bg-red-700 text-white rounded transition-colors duration-150 hover:bg-red-800"
           type="button"
         >
           Cancel
         </button>
       </div>
-    </div>
+    </form>
   );
 }

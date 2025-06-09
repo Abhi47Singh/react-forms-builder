@@ -306,7 +306,8 @@ export default function App() {
             COMPONENTS={COMPONENTS}
             TEMPLATES={TEMPLATES}
             onUseTemplate={handleUseTemplate}
-            handleShare={handleShare} // <-- pass down to FormBuilder
+            handleShare={handleShare}
+            onAddField={addField}
           />
         </div>
         <DragOverlay>
