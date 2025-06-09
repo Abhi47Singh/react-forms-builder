@@ -117,8 +117,11 @@ export default function MobileSidebarDrawer({
           {tab === null && (
             <div
               key={menuKey}
-              className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] -mt-10" // 64px = approx. top bar height
-              style={{ minHeight: "100vh" }}
+              className="flex flex-col items-center justify-center w-full"
+              style={{
+                minHeight: "calc(100vh - 64px)",
+                height: "calc(100vh - 64px)",
+              }}
             >
               {menuOptions.map((opt, i) => (
                 <button

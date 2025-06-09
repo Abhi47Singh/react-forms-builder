@@ -102,7 +102,10 @@ export default function FormBuilder({
       {/* Mobile menu icon (left corner, only below ms) */}
       <button
         className="absolute top-[-10px] left-8 z-40 ms:hidden"
-        onClick={() => setDrawerOpen(true)}
+        onClick={() => {
+          setTab(null); // Always show main menu
+          setDrawerOpen(true);
+        }}
         aria-label="Open sidebar"
       >
         <RiMenu2Fill className="text-[28px]" />

@@ -18,6 +18,7 @@ import SortableField from "./components/SortableField";
 import { typeIcons } from "./components/icons";
 import TEMPLATES from "./data/templates";
 import MobileSidebarDrawer from "./components/MobileSidebarDrawer";
+import PopUpMobile from "./components/PopUpMobile";
 
 const COMPONENTS = [
   { type: "name", label: "Name" },
@@ -223,6 +224,7 @@ export default function App() {
     <div
       className={`${theme} h-screen bg-white text-black dark:bg-gray-900 dark:text-white`}
     >
+      <PopUpMobile />
       {/* Theme toggle */}
       <button
         className="absolute top-2 right-8 z-50 text-xl p-2 rounded-full bg-white dark:bg-gray-800 shadow"
