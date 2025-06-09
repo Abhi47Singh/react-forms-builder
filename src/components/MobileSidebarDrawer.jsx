@@ -41,11 +41,16 @@ export default function MobileSidebarDrawer({
     // eslint-disable-next-line
   }, [tab]);
 
+  const isXs500 = typeof window !== "undefined" && window.innerWidth < 500;
   const menuOptions = [
     { label: "Components", value: "components" },
     { label: "Templates", value: "templates" },
-    { label: "Preview", value: "preview" },
-    { label: "Share Form", value: "share" },
+    ...(isXs500
+      ? [
+          { label: "Preview", value: "preview" },
+          { label: "Share Form", value: "share" },
+        ]
+      : []),
   ];
 
   return (

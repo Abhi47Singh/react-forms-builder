@@ -10,12 +10,17 @@ import SortableField, { SortableFieldGroup } from "./SortableField";
 import { IoShareSocial } from "react-icons/io5";
 import { RiMenu2Fill } from "react-icons/ri";
 import MobileSidebarDrawer from "./MobileSidebarDrawer";
+import { IoIosSwitch } from "react-icons/io";
+import { MdOutlineDeleteForever } from "react-icons/md";
+import FormActionBtn from "./FormActionBtn";
+import SwitchModeControls from "./SwitchModeControls";
 
 export default function FormBuilder({
   config,
   fields,
   updateField,
   removeField,
+  setFields,
   setConfig,
   setPreview,
   undoAction,
@@ -29,13 +34,27 @@ export default function FormBuilder({
   tab,
   setTab,
   handleShare,
-  openMobilePreview, // <-- add this
-  openDesktopPreview, // <-- add this
+  openMobilePreview,
+  openDesktopPreview,
   onAddField,
 }) {
   const { setNodeRef } = useDroppable({ id: "form-dropzone" });
   const dropzoneRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [switchMode, setSwitchMode] = useState(false);
+  const [switchSource, setSwitchSource] = useState(null);
+  const [switchTarget, setSwitchTarget] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 840);
+
+  // --- Toast for actions ---
+  const [actionToast, setActionToast] = useState(null);
+  useEffect(() => {
+    if (actionToast) {
+      const timer = setTimeout(() => setActionToast(null), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [actionToast]);
 
   useEffect(() => {
     if (dropzoneRef.current) {
@@ -43,12 +62,76 @@ export default function FormBuilder({
     }
   }, [fields.length]);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 840);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleEdit = (field) => {
     setConfig({ ...field });
     if (window.innerWidth < 840) {
       setTab("config");
       setDrawerOpen(true);
     }
+  };
+
+  // Start switch mode
+  const onStartSwitch = (id) => {
+    if (!isMobile) return;
+    setSwitchMode(true);
+    setSwitchSource(id);
+    setShowToast(true);
+    setSwitchTarget(null);
+  };
+
+  // Select target field
+  const onSelectTarget = (id) => {
+    if (switchMode && switchSource && id !== switchSource) {
+      setSwitchTarget(id);
+      setShowToast(false);
+    }
+  };
+
+  // Actually switch fields
+  const onSwitchFields = () => {
+    if (switchSource && switchTarget) {
+      const idx1 = fields.findIndex((f) => f.id === switchSource);
+      const idx2 = fields.findIndex((f) => f.id === switchTarget);
+      if (idx1 > -1 && idx2 > -1) {
+        const newFields = [...fields];
+        [newFields[idx1], newFields[idx2]] = [newFields[idx2], newFields[idx1]];
+        if (typeof setFields === "function") {
+          setFields(newFields);
+        }
+      }
+      setSwitchMode(false);
+      setSwitchSource(null);
+      setSwitchTarget(null);
+      setShowToast(false);
+    }
+  };
+
+  // Abort mission
+  const onAbortSwitch = () => {
+    setSwitchMode(false);
+    setSwitchSource(null);
+    setSwitchTarget(null);
+    setShowToast(false);
+  };
+
+  // --- Action handlers with toast ---
+  const handleUndo = () => {
+    undoAction();
+    setActionToast("Undo used");
+  };
+  const handleRedo = () => {
+    redoAction();
+    setActionToast("Redo used");
+  };
+  const handleClear = () => {
+    clearAll();
+    setActionToast("Clear all used");
   };
 
   let rows = [];
@@ -81,6 +164,10 @@ export default function FormBuilder({
           updateField={updateField}
           removeField={removeField}
           onEdit={handleEdit}
+          onStartSwitch={onStartSwitch}
+          isSwitching={switchMode}
+          isMobile={isMobile}
+          onSelectTarget={onSelectTarget}
         />
       );
       i += 1;
@@ -126,61 +213,17 @@ export default function FormBuilder({
         handleShare={handleShare}
         openMobilePreview={openMobilePreview}
         openDesktopPreview={openDesktopPreview}
-        onAddField={onAddField} // <-- add this line
+        onAddField={onAddField}
       />
 
       {/* Action buttons */}
-      <div className="flex justify-center gap-4 -mt-4">
-        {/* Preview button */}
-        <button
-          className="group lg:text-sm text-xl bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow px-3 py-2 xs500:flex items-center gap-2 text-black dark:text-white hidden"
-          onClick={() => setPreview(true)}
-        >
-          <FaEye />
-          <span className="hidden lg:inline group-hover:inline">Preview</span>
-        </button>
-
-        {/* Share Form button */}
-        <button
-          className="group lg:text-sm text-lgs bg-gray-200 dark:bg-gray-700 dark:border-gray-600 rounded shadow px-3 py-2 xs500:flex items-center gap-2 text-black dark:text-white hidden"
-          onClick={handleShare}
-        >
-          <IoShareSocial />
-          <span className="hidden lg:inline group-hover:inline">
-            Share Form
-          </span>
-        </button>
-
-        {/* Undo button */}
-        <button
-          onClick={undoAction}
-          className="group flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
-          title="Undo"
-        >
-          <FaUndoAlt className="text-lg" />
-          <span className="hidden lg:inline group-hover:inline">Undo</span>
-        </button>
-
-        {/* Clear All button */}
-        <button
-          onClick={clearAll}
-          className="group flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-red-500 hover:!text-white transition-colors"
-          title="Clear All"
-        >
-          <FaBroom className="text-lg" />
-          <span className="hidden lg:inline group-hover:inline">Clear All</span>
-        </button>
-
-        {/* Redo button */}
-        <button
-          onClick={redoAction}
-          className="group flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:!bg-green-500 hover:text-white transition"
-          title="Redo"
-        >
-          <FaRedoAlt className="text-lg" />
-          <span className="hidden lg:inline group-hover:inline">Redo</span>
-        </button>
-      </div>
+      <FormActionBtn
+        onPreview={() => setPreview(true)}
+        onShare={handleShare}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
+        onClear={handleClear}
+      />
 
       {/* Main Form Builder */}
       <div
@@ -192,21 +235,111 @@ export default function FormBuilder({
         id="form-dropzone"
         style={{ minHeight: 200, maxHeight: "none" }}
       >
-        <SortableContext
-          items={fields.map((f) => f.id)}
-          strategy={verticalListSortingStrategy}
-        >
+        {isMobile ? (
           <div className="flex flex-col gap-4 h-full">
             {fields.length === 0 ? (
               <div className="flex flex-1 items-center justify-center h-full w-full text-gray-400 text-2xl select-none">
-                Drop to add fields
+                Tap to add fields
               </div>
             ) : (
-              rows
+              fields.map((field) => (
+                <div
+                  key={field.id}
+                  className={`
+            relative
+            ${
+              switchMode && field.id === switchSource
+                ? "ring-4 ring-blue-400"
+                : ""
+            }
+            ${
+              switchMode && switchTarget && field.id === switchTarget
+                ? "ring-4 ring-green-400"
+                : ""
+            }
+            ${
+              switchMode &&
+              field.id !== switchSource &&
+              (!switchTarget || field.id !== switchTarget)
+                ? "brightness-50"
+                : ""
+            }
+            transition-all
+          `}
+                  onClick={() => {
+                    if (
+                      switchMode &&
+                      !switchTarget &&
+                      field.id !== switchSource
+                    ) {
+                      onSelectTarget(field.id);
+                    }
+                  }}
+                >
+                  <SortableField
+                    field={field}
+                    updateField={updateField}
+                    removeField={removeField}
+                    onEdit={handleEdit}
+                    onStartSwitch={onStartSwitch}
+                    switchMode={switchMode}
+                    switchSource={switchSource}
+                    switchTarget={switchTarget}
+                    isMobile={isMobile}
+                    onSelectTarget={onSelectTarget}
+                  />
+                </div>
+              ))
             )}
           </div>
-        </SortableContext>
+        ) : (
+          <SortableContext
+            items={fields.map((f) => f.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="flex flex-col gap-4 h-full">
+              {fields.length === 0 ? (
+                <div className="flex flex-1 items-center justify-center h-full w-full text-gray-400 text-2xl select-none">
+                  Drop to add fields
+                </div>
+              ) : (
+                rows
+              )}
+            </div>
+          </SortableContext>
+        )}
       </div>
+
+      {/* Toast and switch buttons for field switching */}
+      {switchMode && showToast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded shadow z-50">
+          Select field to switch places
+        </div>
+      )}
+      {switchMode && switchTarget && (
+        <button
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold z-50 flex items-center gap-2"
+          onClick={onSwitchFields}
+        >
+          <IoIosSwitch className="text-2xl" />
+          Switch
+        </button>
+      )}
+      {switchMode && (
+        <button
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-8 py-3 rounded-lg text-lg font-semibold z-50"
+          onClick={onAbortSwitch}
+        >
+          Cancel
+        </button>
+      )}
+
+      {/* Action Toast */}
+      {actionToast && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded shadow-lg z-50 text-lg animate-fade-in">
+          {actionToast}
+        </div>
+      )}
     </div>
   );
 }

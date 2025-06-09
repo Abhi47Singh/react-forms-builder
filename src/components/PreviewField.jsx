@@ -1,8 +1,23 @@
 import React from "react";
-import { FaUser, FaEnvelope, FaCalendarAlt, FaHashtag, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
+import {
+  FaUser,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaHashtag,
+  FaMapMarkerAlt,
+  FaPhone,
+} from "react-icons/fa";
 import FileDropPreview from "./FileDropPreview";
 
-export default function PreviewField({ field, value, setValue, readonly, error }) {
+export default function PreviewField({
+  field,
+  value,
+  setValue,
+  readonly,
+  error,
+}) {
+  const previewMode = false; // or true, or from props/state if you have it
+
   if (readonly) {
     if (field.type === "p" || field.type === "paragraph") {
       return (
@@ -49,10 +64,10 @@ export default function PreviewField({ field, value, setValue, readonly, error }
         )}
         <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded min-h-[40px] text-black dark:text-white">
           {field.type === "file"
-            ? (value?.name || value || "No file selected")
+            ? value?.name || value || "No file selected"
             : Array.isArray(value)
-              ? value.join(", ")
-              : value || <span className="text-gray-400">No value</span>}
+            ? value.join(", ")
+            : value || <span className="text-gray-400">No value</span>}
         </div>
       </div>
     );
@@ -60,7 +75,11 @@ export default function PreviewField({ field, value, setValue, readonly, error }
 
   if (field.type === "submit") {
     return (
-      <div className={`mb-6 w-full ${field.width === 50 ? "flex justify-center" : ""}`}>
+      <div
+        className={`mb-6 w-full ${
+          field.width === 50 ? "flex justify-center" : ""
+        }`}
+      >
         <button
           type="submit"
           style={{ width: `${field.width || 100}%` }}
@@ -72,7 +91,9 @@ export default function PreviewField({ field, value, setValue, readonly, error }
     );
   }
 
-  const [internalValue, setInternalValue] = React.useState(field.defaultValue || (field.multi ? [] : ""));
+  const [internalValue, setInternalValue] = React.useState(
+    field.defaultValue || (field.multi ? [] : "")
+  );
 
   React.useEffect(() => {
     if (setValue) setValue(internalValue);
@@ -108,19 +129,24 @@ export default function PreviewField({ field, value, setValue, readonly, error }
       )}
       <div className="relative">
         {field.type === "file" ? (
-          <FileDropPreview required={field.required} placeholder={field.placeholder} value={internalValue} readonly={readonly} />
+          <FileDropPreview
+            required={field.required}
+            placeholder={field.placeholder}
+            value={internalValue}
+            readonly={readonly}
+          />
         ) : field.type === "textarea" ? (
           <textarea
             className="w-full p-2 border rounded h-24 resize-none bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
             placeholder={field.placeholder}
             value={internalValue}
-            onChange={e => setInternalValue(e.target.value)}
+            onChange={(e) => setInternalValue(e.target.value)}
           />
         ) : field.type === "dropdown" ? (
           <select
             className="w-full p-2 border rounded bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
             value={internalValue}
-            onChange={e => setInternalValue(e.target.value)}
+            onChange={(e) => setInternalValue(e.target.value)}
           >
             {field.options.map((o, i) => (
               <option key={i}>{o}</option>
@@ -134,7 +160,11 @@ export default function PreviewField({ field, value, setValue, readonly, error }
                 className={`
                   flex items-center gap-2 px-4 py-2 rounded border
                   border-gray-500 cursor-pointer
-                  ${internalValue.includes(opt) ? "bg-blue-600 text-white" : "bg-white text-black"}
+                  ${
+                    internalValue.includes(opt)
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-black"
+                  }
                 `}
                 style={{ minWidth: 100, justifyContent: "center" }}
               >
@@ -162,7 +192,11 @@ export default function PreviewField({ field, value, setValue, readonly, error }
                 className={`
                   flex items-center gap-2 px-4 py-2 rounded border
                   border-gray-500 cursor-pointer
-                  ${internalValue === opt ? "bg-blue-600 text-white" : "bg-white dark:bg-gray-800 text-black dark:text-white"}
+                  ${
+                    internalValue === opt
+                      ? "bg-blue-600 text-white"
+                      : "bg-white dark:bg-gray-800 text-black dark:text-white"
+                  }
                 `}
                 style={{ minWidth: 100, justifyContent: "center" }}
               >
@@ -184,7 +218,11 @@ export default function PreviewField({ field, value, setValue, readonly, error }
                 className={`
                   flex items-center gap-2 px-4 py-2 rounded border
                   border-gray-500 cursor-pointer
-                  ${internalValue.includes(opt) ? "bg-blue-600 text-white" : "bg-white text-black"}
+                  ${
+                    internalValue.includes(opt)
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-black"
+                  }
                 `}
                 style={{ minWidth: 100, justifyContent: "center" }}
               >
@@ -219,7 +257,7 @@ export default function PreviewField({ field, value, setValue, readonly, error }
           <div className="relative mb-4">
             {(field.type === "text" || field.type === "name") && (
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
-                {FaUser}
+                <FaUser />
               </span>
             )}
             {field.type === "email" && (
@@ -256,14 +294,12 @@ export default function PreviewField({ field, value, setValue, readonly, error }
                 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder={field.placeholder}
               value={internalValue}
-              onChange={e => setInternalValue(e.target.value)}
+              onChange={(e) => setInternalValue(e.target.value)}
             />
           </div>
         )}
       </div>
-      {error && (
-        <div className="text-red-500 text-sm mt-1">{error}</div>
-      )}
+      {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
     </div>
   );
 }

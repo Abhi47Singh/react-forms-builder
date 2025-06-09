@@ -62,6 +62,7 @@ export default function App() {
   const [draggedSidebarType, setDraggedSidebarType] = useState(null);
   const [overId, setOverId] = useState(null);
   const [mobilePreview, setMobilePreview] = useState(false);
+  const [activeField, setActiveField] = useState(null);
   // Persist theme
   useEffect(() => {
     document.documentElement.className = theme;
@@ -71,6 +72,20 @@ export default function App() {
     const saved = localStorage.getItem("theme");
     if (saved) setTheme(saved);
   }, []);
+
+  // Handle window resize to switch tabs
+  // If window is large enough, switch to components tab
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 840 && !tab) {
+        setTab("components");
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    // Run once on mount in case user loads at large size
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, [tab, setTab]);
 
   // Persist fields
   useEffect(() => {
@@ -128,6 +143,10 @@ export default function App() {
     if (active.data?.current?.fromSidebar) {
       setIsSidebarDragging(true);
       setDraggedSidebarType(active.id.replace("sidebar-", ""));
+    } else {
+      // Find and set the active field for overlay
+      const found = fields.find((f) => f.id === active.id);
+      setActiveField(found || null);
     }
   };
 
@@ -301,6 +320,7 @@ export default function App() {
             setTab={setTab}
           />
           <FormBuilder
+            setFields={setFields}
             config={config}
             fields={fields}
             updateField={updateField}
@@ -332,6 +352,18 @@ export default function App() {
               <span className="capitalize font-semibold">
                 {COMPONENTS.find((c) => c.type === draggedSidebarType)?.label ||
                   draggedSidebarType}
+              </span>
+            </div>
+          ) : activeField ? (
+            // This is the preview for fields being reordered
+            <div className="p-4 rounded border bg-white dark:bg-gray-800 shadow-lg flex items-center gap-2 min-w-[120px] opacity-90">
+              {typeIcons[activeField.type] && (
+                <span className="text-xl">
+                  {React.createElement(typeIcons[activeField.type])}
+                </span>
+              )}
+              <span className="capitalize font-semibold">
+                {activeField.label}
               </span>
             </div>
           ) : null}

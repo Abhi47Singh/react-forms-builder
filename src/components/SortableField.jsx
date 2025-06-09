@@ -11,38 +11,26 @@ import { typeIcons } from "./icons";
 const MIN_SIZE = 10;
 const MAX_SIZE = 50;
 
-export default function SortableField({ field, updateField, removeField, onEdit, previewMode }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: field.id });
-  const [editingLabel, setEditingLabel] = useState(false);
-  const [labelValue, setLabelValue] = useState(field.label);
-  const [file, setFile] = useState(null);
-  const inputRef = useRef();
+export default function SortableField({
+  field,
+  updateField,
+  removeField,
+  onEdit,
+  previewMode,
+  onStartSwitch,
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: field.id });
 
-  useEffect(() => {
-    if (editingLabel) setLabelValue(field.label);
-  }, [editingLabel, field.label]);
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleClick = () => {
-    inputRef.current && inputRef.current.click();
-  };
-
-  // Shared dragging style
+  // Shared dragging style for DnD-kit
   const style = {
-    transform: CSS.Translate.toString(transform),
+    transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 50 : "auto",
@@ -80,21 +68,30 @@ export default function SortableField({ field, updateField, removeField, onEdit,
         onEdit={onEdit}
         listeners={listeners}
         attributes={attributes}
+        onStartSwitch={onStartSwitch}
       />
       <FieldInputRenderer
         field={field}
         updateField={updateField}
         previewMode={previewMode}
       />
-      <FieldActions
-        field={field}
-        removeField={removeField}
-      />
+      <FieldActions field={field} removeField={removeField} />
     </div>
   );
 }
 
-export function SortableFieldGroup({ group, updateField, removeField }) {
+export function SortableFieldGroup({
+  group,
+  updateField,
+  removeField,
+  onEdit,
+  onStartSwitch,
+  switchMode,
+  switchSource,
+  switchTarget,
+  isMobile,
+  onSelectTarget,
+}) {
   // group is an array of two fields
   return (
     <div className="flex gap-4 w-full">
@@ -104,6 +101,13 @@ export function SortableFieldGroup({ group, updateField, removeField }) {
             field={field}
             updateField={updateField}
             removeField={removeField}
+            onEdit={onEdit}
+            onStartSwitch={onStartSwitch}
+            switchMode={switchMode}
+            switchSource={switchSource}
+            switchTarget={switchTarget}
+            isMobile={isMobile}
+            onSelectTarget={onSelectTarget}
           />
         </div>
       ))}

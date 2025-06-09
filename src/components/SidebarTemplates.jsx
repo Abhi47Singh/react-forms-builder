@@ -2,7 +2,7 @@ import React from "react";
 
 export default function SidebarTemplates({ templates = [], onUseTemplate }) {
   return (
-    <div className="flex flex-col w-full items-center gap-4 mt-8 overflow-scroll">
+    <div className="flex flex-col w-full items-center gap-4 mt-8">
       {templates.map((tpl) => (
         <div
           key={tpl.name}
