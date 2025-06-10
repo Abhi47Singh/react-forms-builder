@@ -42,13 +42,14 @@ export default function FieldConfigForm({
   }, [localValue, config.type]);
 
   const handleSave = () => {
+    const updatedConfig = { ...config, placeholder: localValue };
     if (!config.id && typeof onAddField === "function") {
       onAddField({
-        ...config,
+        ...updatedConfig,
         id: `${config.type}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
       });
     } else if (config.id && typeof updateField === "function") {
-      updateField(config.id, config);
+      updateField(config.id, updatedConfig);
     }
     setConfig(null);
     onCancel();

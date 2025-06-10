@@ -129,7 +129,7 @@ export default function FormBuilder({
     <div className="flex-1 relative flex flex-col mt-6">
       {/* Mobile menu icon (left corner, only below ms) */}
       <button
-        className="absolute top-[-10px] left-8 z-40 ms:hidden"
+        className="absolute top-[-20px] left-8 z-40 ms:hidden"
         onClick={() => {
           setTab(null); // Always show main menu
           setDrawerOpen(true);
