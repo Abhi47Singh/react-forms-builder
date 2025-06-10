@@ -53,6 +53,7 @@ export default function ({
             <Icon className="text-lg hidden xxs:inline-block" />
           ))}
         {field.label}
+        {field.required && <span className="text-red-500">*</span>}
       </h4>
       <button
         onClick={() => onEdit(field)}

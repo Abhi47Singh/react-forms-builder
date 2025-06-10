@@ -58,8 +58,9 @@ export default function PreviewField({
     return (
       <div className="mb-6">
         {field.type !== "hr" && (
-          <label className="block mb-2 font-semibold text-black dark:text-white flex items-center gap-2">
+          <label className="mb-2 font-semibold text-black dark:text-white flex items-center gap-2">
             {field.label}
+            {field.required && <span className="text-red-500">*</span>}
           </label>
         )}
         <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded min-h-[40px] text-black dark:text-white">
@@ -123,8 +124,9 @@ export default function PreviewField({
   return (
     <div className="mb-6">
       {field.type !== "hr" && (
-        <label className="block mb-2 font-semibold text-black dark:text-white flex items-center gap-2">
+        <label className="mb-2 font-semibold text-black dark:text-white flex items-center gap-2">
           {field.label}
+          {field.required && <span className="text-red-500">*</span>}
         </label>
       )}
       <div className="relative">

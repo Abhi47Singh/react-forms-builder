@@ -122,7 +122,10 @@ export default function FieldConfigForm({
       {/* Label */}
       {config.type !== "hr" && config.type !== "p" && (
         <div className="mb-4">
-          <label className="block mb-2 font-semibold">Label</label>
+          <label className="mb-2 font-semibold flex items-center gap-2">
+            Label
+            {config.required && <span className="text-red-500">*</span>}
+          </label>
           <input
             ref={labelInputRef}
             className="w-full p-2 border rounded bg-white dark:bg-gray-900 text-black dark:text-white"

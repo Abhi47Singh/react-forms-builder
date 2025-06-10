@@ -175,6 +175,12 @@ export default function FormBuilder({
         className="flex-1 p-8 overflow-auto border-2 border-dotted rounded flex flex-col bg-gray-50 dark:bg-gray-900 mx-8 my-8 scrollbar-hide"
         id="form-dropzone"
         style={{ minHeight: 200, maxHeight: "none" }}
+        onClick={() => {
+          if (isMobile && fields.length === 0) {
+            setTab(null); // Show main menu
+            setDrawerOpen(true);
+          }
+        }}
       >
         <FieldList
           fields={fields}

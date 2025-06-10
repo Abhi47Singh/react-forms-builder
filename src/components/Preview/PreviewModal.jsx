@@ -23,6 +23,7 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
     )
   );
   const [errors, setErrors] = useState({});
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const fieldRefs = useRef({});
 
   const handleFieldChange = (id, value) => {
@@ -54,6 +55,8 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
       return;
     }
     setSubmitted(true);
+    setShowConfirmation(true);
+    setTimeout(() => setShowConfirmation(false), 1800);
   };
 
   const toggleTheme = () => {
@@ -62,6 +65,54 @@ export default function PreviewModal({ fields, setPreview, theme, setTheme }) {
 
   return (
     <div className="fixed inset-0 bg-white dark:bg-gray-900 flex flex-col items-center justify-start p-8 z-50">
+      {/* Confirmation Pop-up */}
+      {showConfirmation && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div
+            className="flex flex-col items-center justify-center"
+            style={{ minWidth: 180, minHeight: 180 }}
+          >
+            <div
+              className="heartbeat bg-green-500 flex items-center justify-center rounded-full shadow-lg"
+              style={{ width: 120, height: 120 }}
+            >
+              {/* Tick blob SVG, styled like provided image */}
+              <svg
+                width="90"
+                height="90"
+                viewBox="0 0 90 90"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <ellipse cx="45" cy="45" rx="44" ry="42" fill="#1A2942" />
+                <path
+                  d="M28 48L41 61L63 36"
+                  stroke="white"
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span className="mt-6 text-white text-lg font-bold drop-shadow-lg">
+              Submitted!
+            </span>
+          </div>
+          <style>{`
+            .heartbeat {
+              animation: heartbeat 1.2s ease-in-out 2;
+            }
+            @keyframes heartbeat {
+              0% { transform: scale(1); }
+              20% { transform: scale(1.15); }
+              40% { transform: scale(0.95); }
+              60% { transform: scale(1.08); }
+              80% { transform: scale(0.97); }
+              100% { transform: scale(1); }
+            }
+          `}</style>
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6 w-full">
         {/* Back button always left */}
         <button
